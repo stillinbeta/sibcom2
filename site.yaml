@@ -1,0 +1,50 @@
+pages:
+  '/contact':
+    name: "Liz Frost"
+    also_known_as:
+      - Ellie
+      - Beta
+      - Izzy
+      - Elizabeth
+    social:
+      twitter: "twitter.com/stillinbeta"
+      github: "github.com/stillinbeta"
+    contact:
+      email: "liz @ [ siβ ] .com"
+  '/talks':
+  - name: "Kubernetes from a Cake Mix" 
+    conference: "SRECon North American 2019"
+    recording: null
+    slides: "slideshare.net/ElizabethFrost4/kubernetes-from-a-box-mix"
+    repository: "github.com/stillinbeta/srecon_k8s_tutorial"
+  - name: "You got database in my cloud!"
+    conference: "PostgresConf NYC 2019"
+    recording: null
+    slides: "slideshare.net/ElizabethFrost4/you-got-database-in-my-cloud"
+    repository: "github.com/stillinbeta/k8s_fdw"
+  - name: "Postgres! Plays! Pokemon!"
+    conference: "BangBangCon West"
+    recording: "youtube.com/watch?v=OJ-6UsYYe_Y"
+    slides: "slideshare.net/ElizabethFrost4/you-got-database-in-my-cloud"
+    repository: "github.com/stillinbeta/PostgresPlaysPokemon"
+  '/projects':
+  - name: "Zeerust"
+    description: "A Z80 emulator written in Rust"
+    technologies:
+    - rust
+    code: "github.com/stillinbeta/zeerust"
+    site: "crates.io/crate/zeerust"
+  - name: "Friendship is Monadic"
+    description: "An Intepreter for the esotiric language FiM++"
+    technologies:
+    - haskell
+    - parsec
+    code: "github.com/stillinbeta/friendshipismonadic"
+    site: "stillinbeta.github.io/friendshipismonadic"
+  - name: "pg-extend-rs (Foreign Data Wrapper)"
+    description: "I contributed foreign data wrapper support to a Rust library for Postgres ExtensionS"
+    technologies:
+      - rust
+      - postgres
+    code: "github.com/bluejekyll/pg-extend-rs/blob/master/pg-extend/src/pg_fdw.rs" 
+    site: null
