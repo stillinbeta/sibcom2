@@ -1,0 +1,8 @@
+[package]
+name = "sibcom2"
+version = "0.1.0"
+authors = ["Ellie Frost <web@stillinbeta.com>"]
+edition = "2018"
+
+[dependencies]
+generator = { path = "../generator" }

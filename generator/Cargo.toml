@@ -1,0 +1,12 @@
+[package]
+name = "generator"
+version = "0.1.0"
+authors = ["Ellie Frost <web@stillinbeta.com>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "0.6.1"
+proc-macro2 = "0.4"
