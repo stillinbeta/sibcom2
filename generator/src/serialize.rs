@@ -3,7 +3,7 @@ extern crate proc_macro2;
 extern crate quote;
 extern crate serde_yaml;
 
-use proc_macro2::{TokenStream, TokenTree};
+use proc_macro2::TokenStream;
 use quote::quote;
 
 pub(crate) fn value_to_bmon(value: &serde_yaml::Value) -> TokenStream {
