@@ -1,0 +1,12 @@
+pages:
+  '/':
+    "name": "Twilight Sparkle"
+    "occupation": "Princess of Friendship"
+  "/friends":
+    "ponyville":
+      - "Applejack"
+      - "Fluttershy"
+      - "Pinkie Pie"
+      - "Rainbow Dash"
+      - "Rarity"
+  

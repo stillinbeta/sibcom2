@@ -9,4 +9,10 @@ proc-macro = true
 
 [dependencies]
 quote = "0.6.1"
+serde_yaml = "0.8"
+serde = { version = "1.0", features = ["derive"] }
 proc-macro2 = "0.4"
+bmon = { path = "../bmon" }
+
+[dev-dependencies]
+maplit = "1.0.1"
