@@ -15,6 +15,32 @@ pub struct Site {
     pub pages: HashMap<String, serde_yaml::Value>,
 }
 
+impl Site {
+    pub fn with_nav(&self) -> HashMap<String, serde_yaml::Value> {
+        let nav: serde_yaml::Value = self
+            .pages
+            .keys()
+            .map(|v| serde_yaml::Value::from(v.as_str()))
+            .collect();
+        self.pages
+            .iter()
+            .map(|(k, v)| {
+                (
+                    k.clone(),
+                    serde_yaml::Value::Mapping(
+                        vec![
+                            (serde_yaml::Value::from("nav"), nav.clone()),
+                            (serde_yaml::Value::from("body"), v.clone()),
+                        ]
+                        .into_iter()
+                        .collect(),
+                    ),
+                )
+            })
+            .collect()
+    }
+}
+
 pub(crate) fn parse_site(site: &str) -> Result<Site, Error> {
     serde_yaml::from_str(site).map_err(Error::SerdeError)
 }

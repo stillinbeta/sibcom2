@@ -8,7 +8,8 @@ use quote::quote;
 pub(crate) fn routes(input: TokenStream) -> Result<TokenStream, Error> {
     let site_file = crate::load::load_file(input)?;
     let site = crate::load::parse_site(&site_file)?;
-    let routes = site.pages.iter().map(|(k, v)| {
+    let pages = site.with_nav();
+    let routes = pages.iter().map(|(k, v)| {
         let bmon = crate::serialize::value_to_bmon(v);
         quote!(
                 rocket::Route::new(rocket::http::Method::Get, #k, bmon::BMONHandler(#bmon))

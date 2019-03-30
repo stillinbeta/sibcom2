@@ -57,6 +57,7 @@ macro_rules! html_page {
 pub enum Value<'a> {
     String(&'a str),
     Link(&'a str), // Will be hotlinked if rendered as HTML
+    RelativeLink(&'a str),
     Sequence(&'a [Value<'a>]),
     Object(&'a [(Value<'a>, Value<'a>)]), // Easier to make literals of
     Number(i64),
@@ -69,6 +70,7 @@ impl<'a> Value<'a> {
         match self {
             Value::String(s) => format!("{:?}", s),
             Value::Link(s) => format!("{:?}", s),
+            Value::RelativeLink(s) => format!("{:?}", s),
             Value::Number(n) => format!("{}", n),
             Value::Boolean(b) => format!("{}", b),
             Value::Null => "null".into(),
@@ -98,6 +100,11 @@ impl<'a> Value<'a> {
             Value::Link(s) => span!(
                 "link",
                 r#""<a href="https://{0}">{0}</a>""#,
+                htmlescape::encode_minimal(s)
+            ),
+            Value::RelativeLink(s) => span!(
+                "link",
+                r#""<a href="{0}">{0}</a>""#,
                 htmlescape::encode_minimal(s)
             ),
             Value::Boolean(b) => span!("boolean", "{}", b),
