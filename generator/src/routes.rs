@@ -11,7 +11,7 @@ pub(crate) fn routes(input: TokenStream) -> Result<TokenStream, Error> {
     let routes = site.pages.iter().map(|(k, v)| {
         let bmon = crate::serialize::value_to_bmon(v);
         quote!(
-            rocket::Route::new(rocket::http::Method::Get, #k, bmon::BMONHandler(#bmon))
+                rocket::Route::new(rocket::http::Method::Get, #k, bmon::BMONHandler(#bmon))
         )
     });
     Ok(quote!(vec![

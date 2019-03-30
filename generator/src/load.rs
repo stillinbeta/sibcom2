@@ -21,8 +21,7 @@ pub(crate) fn parse_site(site: &str) -> Result<Site, Error> {
 
 pub(crate) fn load_file(ts: TokenStream) -> Result<String, Error> {
     let lit: syn::LitStr = syn::parse2(ts)?;
-    eprintln!("{:?}", std::env::current_dir());
-    let mut file = File::open(dbg!(lit.value()))?;
+    let mut file = File::open(lit.value())?;
     let mut buf = String::new();
     file.read_to_string(&mut buf)?;
     Ok(buf)
