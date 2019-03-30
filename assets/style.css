@@ -30,5 +30,10 @@ span.link a {
 }
 
 span.link a:visited {
-    color: blue;
+    color: purple;
+}
+
+span.boolean, span.null {
+    color: grey;
+    font-weight: bold;
 }
