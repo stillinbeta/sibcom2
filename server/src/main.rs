@@ -1,8 +1,8 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use]
+extern crate bmon;
 extern crate generator;
 
 fn main() {
-    routes!("/var/lib/pokemon2");
+    println!("{:#?}", generator::yaml_routes!("site.yaml"));
 }

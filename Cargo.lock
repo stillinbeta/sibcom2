@@ -3,6 +3,10 @@
 [[package]]
 name = "bmon"
 version = "0.1.0"
+dependencies = [
+ "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_yaml 0.8.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "dtoa"
@@ -81,6 +85,7 @@ dependencies = [
 name = "sibcom2"
 version = "0.1.0"
 dependencies = [
+ "bmon 0.1.0",
  "generator 0.1.0",
 ]
 

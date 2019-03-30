@@ -5,7 +5,6 @@ extern crate syn;
 
 use crate::error::Error;
 use proc_macro2::TokenStream;
-use quote::quote;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs::File;
@@ -13,7 +12,7 @@ use std::io::Read;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Site {
-    pub pages: HashMap<String, HashMap<String, serde_yaml::Value>>,
+    pub pages: HashMap<String, serde_yaml::Value>,
 }
 
 pub(crate) fn parse_site(site: &str) -> Result<Site, Error> {
@@ -22,6 +21,7 @@ pub(crate) fn parse_site(site: &str) -> Result<Site, Error> {
 
 pub(crate) fn load_file(ts: TokenStream) -> Result<String, Error> {
     let lit: syn::LitStr = syn::parse2(ts)?;
+    eprintln!("{:?}", std::env::current_dir());
     let mut file = File::open(dbg!(lit.value()))?;
     let mut buf = String::new();
     file.read_to_string(&mut buf)?;
@@ -34,6 +34,7 @@ mod test {
 
     use super::*;
     use maplit::hashmap;
+    use quote::quote;
 
     const EXAMPLE_SITE: &str = include_str!("testdata/site.yaml");
 
@@ -41,19 +42,21 @@ mod test {
     fn parse() {
         let expected = Site {
             pages: hashmap!(
-                "/".into() => hashmap!(
-                    "name".into() => "Twilight Sparkle".into(),
-                    "occupation".into() => "Princess of Friendship".into(),
-                ),
-                "/friends".into() => hashmap!(
-                    "ponyville".into() => serde_yaml::Value::Sequence(vec!(
+                "/".into() => serde_yaml::Value::Mapping(vec!(
+                    ("name".into(), "Twilight Sparkle".into()),
+                    ("occupation".into(), "Princess of Friendship".into()),
+                ).iter().cloned().collect()),
+                "/friends".into() => serde_yaml::Value::Mapping(vec!(
+                    ("ponyville".into(),
+                     serde_yaml::Value::Sequence(vec!(
                         "Applejack".into(),
                         "Fluttershy".into(),
                         "Pinkie Pie".into(),
                         "Rainbow Dash".into(),
                         "Rarity".into(),
-                        )
+                     ))
                     )
+                ).iter().cloned().collect()
                 )
             ),
         };
@@ -64,9 +67,8 @@ mod test {
 
     #[test]
     fn load() {
-        assert_eq!(
-            EXAMPLE_SITE,
-            load_file(quote!("src/testdata/site.yaml")).expect("failed to load file")
-        )
+        let loaded = load_file(quote!("src/testdata/site.yaml")).expect("failed to load file");
+
+        assert_eq!(EXAMPLE_SITE, loaded)
     }
 }

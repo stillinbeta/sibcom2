@@ -5,7 +5,7 @@ extern crate syn;
 pub(crate) enum Error {
     SerdeError(serde_yaml::Error),
     SynError(syn::Error),
-    Msg(String),
+    // Msg(String),
     IOError(std::io::Error),
 }
 

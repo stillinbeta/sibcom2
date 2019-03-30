@@ -23,12 +23,12 @@ pub(crate) fn value_to_bmon(value: &serde_yaml::Value) -> TokenStream {
         serde_yaml::Value::String(s) => quote! ( bmon::Value::String(#s) ),
         serde_yaml::Value::Sequence(seq) => {
             let tokens = seq.iter().map(value_to_bmon);
-            quote!( bmon::Value::Sequence([#(#tokens,)*]))
+            quote!( bmon::Value::Sequence(&[#(#tokens,)*]))
         }
         serde_yaml::Value::Mapping(mapping) => {
             let keys = mapping.iter().map(|(k, _)| value_to_bmon(k));
             let values = mapping.iter().map(|(_, v)| value_to_bmon(v));
-            quote!( bmon::Value::Object([#((#keys, #values),)*]))
+            quote!( bmon::Value::Object(&[#((#keys, #values),)*]))
         }
     }
 }
@@ -59,7 +59,7 @@ mod tests {
             .collect(),
         );
 
-        let expected = quote!(bmon::Value::Object([
+        let expected = quote!(bmon::Value::Object(&[
             (
                 bmon::Value::String("name"),
                 bmon::Value::String("Twilight Sparkle")
@@ -67,7 +67,7 @@ mod tests {
             (bmon::Value::String("age"), bmon::Value::Number(23i64)),
             (
                 bmon::Value::String("parents"),
-                bmon::Value::Sequence([
+                bmon::Value::Sequence(&[
                     bmon::Value::String("Night Light"),
                     bmon::Value::String("Twilight Velvet"),
                 ])
