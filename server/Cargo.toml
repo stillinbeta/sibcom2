@@ -7,3 +7,4 @@ edition = "2018"
 [dependencies]
 generator = { path = "../generator" }
 bmon = { path = "../bmon" }
+rocket = "0.4.0"

@@ -2,7 +2,10 @@
 
 extern crate bmon;
 extern crate generator;
+extern crate rocket;
 
 fn main() {
-    println!("{:#?}", generator::yaml_routes!("site.yaml"));
+    rocket::ignite()
+        .mount("/", generator::yaml_routes!("site.yaml"))
+        .launch();
 }
