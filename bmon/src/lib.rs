@@ -97,7 +97,7 @@ impl<'a> Value<'a> {
             ),
             Value::Link(s) => span!(
                 "link",
-                r#"<a href="https://{0}">{0}</a>"#,
+                r#""<a href="https://{0}">{0}</a>""#,
                 htmlescape::encode_minimal(s)
             ),
             Value::Boolean(b) => span!("boolean", "{}", b),

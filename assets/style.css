@@ -25,10 +25,10 @@ span.key span.string {
     color: green,
 }
 
-div.link a {
+span.link a {
     color: blue;
 }
 
-div.link a:visited {
+span.link a:visited {
     color: blue;
 }

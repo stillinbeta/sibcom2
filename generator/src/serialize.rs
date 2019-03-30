@@ -20,6 +20,7 @@ pub(crate) fn value_to_bmon(value: &serde_yaml::Value) -> TokenStream {
             quote!(bmon::Value::Number(#v))
         }
         // TODO: links
+        serde_yaml::Value::String(s) if s.contains('/') => quote! ( bmon::Value::Link(#s) ),
         serde_yaml::Value::String(s) => quote! ( bmon::Value::String(#s) ),
         serde_yaml::Value::Sequence(seq) => {
             let tokens = seq.iter().map(value_to_bmon);
