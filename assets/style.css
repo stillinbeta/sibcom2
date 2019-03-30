@@ -1,0 +1,34 @@
+body {
+    padding: 1em;
+    font-family: "Inconsolata";
+    font-size: 18pt;
+}
+
+span.brace-open, span.brace-close, span.bracket-open, span.bracket-close {
+    font-weight: bold;
+}
+
+
+div.brace-inner, div.bracket-inner {
+    margin-left: 1em;
+}
+
+span.key span.string {
+    color: green;
+}
+
+span.string{
+    color: blue
+}
+
+span.key span.string {
+    color: green,
+}
+
+div.link a {
+    color: blue;
+}
+
+div.link a:visited {
+    color: blue;
+}
