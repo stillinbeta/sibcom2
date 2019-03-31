@@ -1,0 +1,20 @@
+language: rust
+cache: cargo
+rust: nightly
+script:
+- cargo test --verbose
+- cargo build
+- if rustup component add clippy ; then cargo clippy --all-targets -- -D warnings
+  ; else echo "no clippy"; fi
+deploy:
+  provider:
+    script:
+    - cargo build --release
+    - docker login -u stillinbeta -p "$DOCKER_PASSWORD"
+    - docker build -t sibcom2 .
+    - docker images
+    - docker tag sibcom2 stillinbeta/sibcom2
+    - docker push stillinbeta/sibcom2
+env:
+  global:
+    secure: Zx417wvpvs3+o1w4n2M+xg62OG/Rwkv+es/EwUJYTOVi4D2bkAvrTphpXspvZnsIRzl/03Dkm4iXIfOJMOjw3OplaRs5t4IkeSug7Kiz+QLQJt8qAuvObnM5sUsfqbPr3928htMDnwDP9o9yADCgghrFS7IEu/mlrtVXzL7ryXMG6oOTeIUnYqUEmaCMbQgqUaAahG68WPeCB5ODbbuWqTpmovP7QWxqGTN8YZGrJdl+vtVcb1PGKkDoPRHVHEZkM2yjaqWlc51YOeZ4vyBMOLavOB22QD1z4c+6IkY3GB3S6VvDhPM7tja3w26pijuCobZMakltfrVj9K1lm8IQdqUOwJIR4ZFdDhbsxFqJPSfMvfx3Wwc3c/tKTxM8Zw9U+1K8y62Q5uGSTrniGrsWbkT3ym89TvN+Sc3VwoGSd6c18A72KKdcPKHRf/7KCR5HzWRWsC7qFFeERfuSFY0bRSm8FX6vde7d0NGatmgj+PaqGZxOvBDiNzp3anh6Z48X+QFWlajH0FQOkKidlW+63bgryhXD4mC8q1uzIiNR//zSf/VA1k7UAyUD402kSbZypBO1PtfOqn1YkHuj2E6IiCXJ5IVvIy5KN8uvKQvILzgn5AqZPNx+SwqattiXZPe3gF7jWQyedUEQb5p0HQSc4fEXPCGoP5/zNT9AZTPtwRY=
