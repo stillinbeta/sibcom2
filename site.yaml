@@ -1,5 +1,5 @@
 pages:
-  '/':
+  '/hello':
     name: "Liz Frost"
     occupation: "Software Engineer"
     likes:

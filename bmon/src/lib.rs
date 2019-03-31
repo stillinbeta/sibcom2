@@ -30,13 +30,13 @@ macro_rules! span {
 }
 
 macro_rules! html_page {
-    ($body: expr) => {
+    ($title: expr, $body: expr) => {
         format!(
             r#"<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>title</title>
+<title>{}</title>
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Inconsolata" type="text/css">
 <style type="text/css">
 {}
@@ -47,6 +47,7 @@ macro_rules! html_page {
 </body>
 </html>
 "#,
+            $title,
             include_str!("../../assets/style.css"),
             $body
         )
@@ -157,7 +158,7 @@ where
 }
 
 #[derive(Clone, Debug)]
-pub struct BMONHandler(pub Value<'static>);
+pub struct BMONHandler(pub Value<'static>, pub &'static str);
 
 impl Handler for BMONHandler {
     fn handle<'r>(&self, req: &'r Request, _data: Data) -> Outcome<'r> {
@@ -171,7 +172,7 @@ impl Handler for BMONHandler {
             }
             _ => {
                 response.set_header(ContentType::HTML);
-                response.set_sized_body(Cursor::new(html_page!(self.0.to_html())));
+                response.set_sized_body(Cursor::new(html_page!(self.1, self.0.to_html())));
             }
         };
         Outcome::from(req, response)

@@ -30,7 +30,7 @@ impl Site {
                     serde_yaml::Value::Mapping(
                         vec![
                             (serde_yaml::Value::from("nav"), nav.clone()),
-                            (serde_yaml::Value::from("body"), v.clone()),
+                            (serde_yaml::Value::from(k.clone().split_off(1)), v.clone()),
                         ]
                         .into_iter()
                         .collect(),
