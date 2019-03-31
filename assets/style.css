@@ -2,6 +2,8 @@ body {
     padding: 1em;
     font-family: "Inconsolata";
     font-size: 18pt;
+    background-color:  #002b36;
+    color: #657b83;
 }
 
 span.brace-open, span.brace-close, span.bracket-open, span.bracket-close {
@@ -14,26 +16,23 @@ div.brace-inner, div.bracket-inner {
 }
 
 span.key span.string {
-    color: green;
+    color: #268bd2;
+    font-weight: bold;
 }
 
 span.string{
-    color: blue
-}
-
-span.key span.string {
-    color: green,
+    color: #859900;
 }
 
 span.link a {
-    color: blue;
+    color: #859900;
 }
 
 span.link a:visited {
-    color: purple;
+    color: #6c71c4;
 }
 
 span.boolean, span.null {
-    color: grey;
+    color: #2aa198;
     font-weight: bold;
 }

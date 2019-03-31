@@ -1,4 +1,11 @@
 pages:
+  '/':
+    name: "Liz Frost"
+    occupation: "Software Engineer"
+    likes:
+      - rust
+      - ponies
+      - girls
   '/contact':
     name: "Liz Frost"
     also_known_as:
