@@ -1,3 +1,5 @@
+TIME := $(shell date +%s)
+
 .phony: tests debug release docker-push
 
 
@@ -18,6 +20,8 @@ docker-build: release
 
 docker-push: docker-build
 	docker images
-	docker tag sibcom2 stillinbeta/sibcom2
-	docker push stillinbeta/sibcom2
+	docker tag sibcom2 stillinbeta/sibcom2:$(TIME)
+	docker tag sibcom2 stillinbeta/sibcom2:latest
+	docker push stillinbeta/sibcom2:$(TIME)
+  docker push stillinbeta/sibcom2:latest
 
