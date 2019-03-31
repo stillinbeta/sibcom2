@@ -6,7 +6,15 @@ script:
 - cargo build
 - if rustup component add clippy ; then cargo clippy --all-targets -- -D warnings
   ; else echo "no clippy"; fi
+
+before_cache:
+  - |
+    if [[ $TRAVIS_TEST_RESULT = 0 ]]; then
+      cargo build --release
+    fi
+
 deploy:
+  skip_cleanup: true
   provider: script
   script: make docker-login docker-push
   on:
