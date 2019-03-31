@@ -11,7 +11,7 @@ release:
 	cargo build --release
 
 docker-login:
-	docker login -u stillinbeta -p "$DOCKER_PASSWORD"
+	echo $$DOCKER_PASSWORD | docker login -u stillinbeta --password-stdin
 
 docker-build: release
 	docker build -t sibcom2 .
