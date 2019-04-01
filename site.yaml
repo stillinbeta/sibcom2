@@ -1,11 +1,12 @@
 pages:
   '/hello':
     name: "Liz Frost"
-    occupation: "Software Engineer"
+    occupation: "Infrastructure Engineer"
     likes:
       - rust
       - ponies
       - girls
+    at: recurse.com/
   '/contact':
     name: "Liz Frost"
     also_known_as:
@@ -26,16 +27,32 @@ pages:
     recording: null
     slides: "slideshare.net/ElizabethFrost4/kubernetes-from-a-box-mix"
     repository: "github.com/stillinbeta/srecon_k8s_tutorial"
-  - name: "You got database in my cloud!"
+  - name: "You got Database in my cloud!"
     conference: "PostgresConf NYC 2019"
     recording: null
     slides: "slideshare.net/ElizabethFrost4/you-got-database-in-my-cloud"
     repository: "github.com/stillinbeta/k8s_fdw"
   - name: "Postgres! Plays! Pokemon!"
-    conference: "BangBangCon West"
+    conference: "BangBangCon West 2019"
     recording: "youtube.com/watch?v=OJ-6UsYYe_Y"
     slides: "slideshare.net/ElizabethFrost4/you-got-database-in-my-cloud"
     repository: "github.com/stillinbeta/PostgresPlaysPokemon"
+  - name: "CGo for Fun and Profit"
+    conference: "FOSDEM 2019"
+    recording: "video.fosdem.org/2019/UD2.120/gco.webm"
+    slides: "slideshare.net/ElizabethFrost4/cgo-for-fun-and-profit"
+    repository: "github.com/liztio/cgo-demo"
+  - name: "You got Database in my Cloud (short version)"
+    conference: "Kubecon Seattle 2018"
+    slides: "slideshare.net/ElizabethFrost4/you-got-database-in-my-cloud-short-version"
+    recording: "youtube.com/watch?v=csM8LpedO3E"
+    repository: "github.com/stillinbeta/k8s_fdw"
+  - name: "Kubeadm Deep Dive"
+    conference: "Kubecon Seattle 2018"
+    slides: "slideshare.net/ElizabethFrost4/kubeadm-deep-dive-kubecon-seattle-2018"
+    recording: "youtube.com/watch?v=tAA0Hlag2n0"
+    repository: "github.com/kubernetes/kubeadm"
+    
   '/projects':
   - name: "Zeerust"
     description: "A Z80 emulator written in Rust"
@@ -57,3 +74,12 @@ pages:
       - postgres
     code: "github.com/bluejekyll/pg-extend-rs/blob/master/pg-extend/src/pg_fdw.rs" 
     site: null
+  - name: "do-mastodon"
+    description: "A set of terraform an ansible scripts for running Mastodon on a Digital Ocean droplet"
+    technologies:
+      - ansible
+      - terraform
+      - docker
+    code: "github.com/stillinbeta/do-mastodon"
+    site: null
+  
