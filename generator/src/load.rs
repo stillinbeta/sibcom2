@@ -12,15 +12,16 @@ use std::io::Read;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Site {
-    pub pages: HashMap<String, serde_yaml::Value>,
+    #[serde(with = "tuple_vec_map")]
+    pub pages: Vec<(String, serde_yaml::Value)>,
 }
 
 impl Site {
     pub fn with_nav(&self) -> HashMap<String, serde_yaml::Value> {
         let nav: serde_yaml::Value = self
             .pages
-            .keys()
-            .map(|v| serde_yaml::Value::from(v.as_str()))
+            .iter()
+            .map(|(k, _v)| serde_yaml::Value::from(k.as_str()))
             .collect();
         self.pages
             .iter()
@@ -55,10 +56,7 @@ pub(crate) fn load_file(ts: TokenStream) -> Result<String, Error> {
 
 #[cfg(test)]
 mod test {
-    extern crate maplit;
-
     use super::*;
-    use maplit::hashmap;
     use quote::quote;
 
     const EXAMPLE_SITE: &str = include_str!("testdata/site.yaml");
@@ -66,24 +64,38 @@ mod test {
     #[test]
     fn parse() {
         let expected = Site {
-            pages: hashmap!(
-                "/".into() => serde_yaml::Value::Mapping(vec!(
-                    ("name".into(), "Twilight Sparkle".into()),
-                    ("occupation".into(), "Princess of Friendship".into()),
-                ).iter().cloned().collect()),
-                "/friends".into() => serde_yaml::Value::Mapping(vec!(
-                    ("ponyville".into(),
-                     serde_yaml::Value::Sequence(vec!(
-                        "Applejack".into(),
-                        "Fluttershy".into(),
-                        "Pinkie Pie".into(),
-                        "Rainbow Dash".into(),
-                        "Rarity".into(),
-                     ))
-                    )
-                ).iter().cloned().collect()
-                )
-            ),
+            pages: vec![
+                (
+                    "/".into(),
+                    serde_yaml::Value::Mapping(
+                        vec![
+                            ("name".into(), "Twilight Sparkle".into()),
+                            ("occupation".into(), "Princess of Friendship".into()),
+                        ]
+                        .iter()
+                        .cloned()
+                        .collect(),
+                    ),
+                ),
+                (
+                    "/friends".into(),
+                    serde_yaml::Value::Mapping(
+                        vec![(
+                            "ponyville".into(),
+                            serde_yaml::Value::Sequence(vec![
+                                "Applejack".into(),
+                                "Fluttershy".into(),
+                                "Pinkie Pie".into(),
+                                "Rainbow Dash".into(),
+                                "Rarity".into(),
+                            ]),
+                        )]
+                        .iter()
+                        .cloned()
+                        .collect(),
+                    ),
+                ),
+            ],
         };
 
         let site = parse_site(EXAMPLE_SITE).expect("failed to parse");
