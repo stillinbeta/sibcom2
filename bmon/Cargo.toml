@@ -6,9 +6,11 @@ authors = ["Ellie Frost <web@stillinbeta.com>"]
 edition = "2018"
 
 [dependencies]
+quote = "0.6.1"
 serde = { version = "1.0", features = ["derive"] }
 rocket = "0.4"
 htmlescape = "0.3"
+proc-macro2 = "0.4"
 
 
 [dev-dependencies]

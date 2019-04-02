@@ -1,6 +1,9 @@
 extern crate htmlescape;
+extern crate proc_macro2;
+extern crate quote;
 extern crate rocket;
 
+use quote::quote;
 use rocket::handler::{Handler, Outcome};
 use rocket::http::{Accept, ContentType, Status};
 use rocket::{Data, Request, Response};
@@ -55,18 +58,44 @@ macro_rules! html_page {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub enum Value<'a> {
-    String(&'a str),
-    Link(&'a str), // Will be hotlinked if rendered as HTML
-    RelativeLink(&'a str),
-    Sequence(&'a [Value<'a>]),
-    Object(&'a [(Value<'a>, Value<'a>)]), // Easier to make literals of
+pub enum Value {
+    String(String),
+    Link(String), // Will be hotlinked if rendered as HTML
+    RelativeLink(String),
+    Sequence(Vec<Value>),
+    Object(Vec<(Value, Value)>), // Easier to make literals of
     Number(i64),
     Boolean(bool),
     Null,
 }
 
-impl<'a> Value<'a> {
+impl quote::ToTokens for Value {
+    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
+        let ts = match self {
+            Value::String(s) => quote! { bmon::Value::String(String::from(#s)) },
+            Value::Link(s) => quote! { bmon::Value::Link(String::from(#s)) },
+            Value::RelativeLink(s) => quote! {  bmon::Value::RelativeLink(String::from(#s)) },
+            Value::Number(n) => quote! { bmon::Value::Number(#n) },
+            Value::Boolean(b) => quote! { bmon::Value::Boolean(#b) },
+            Value::Null => quote! { bmon::Value::Null },
+            Value::Sequence(s) => {
+                let tokens = s.iter().map(|v| quote! { #v });
+                quote! {
+                    bmon::Value::Sequence(vec![#(#tokens,)*])
+                }
+            }
+            Value::Object(m) => {
+                let keys = m.iter().map(|(k, _)| quote! { #k });
+                let values = m.iter().map(|(_, v)| quote! { #v });
+                quote!(bmon::Value::Object(vec![#((#keys, #values),)*]))
+            }
+        };
+
+        tokens.extend(ts);
+    }
+}
+
+impl Value {
     fn to_json(&self) -> String {
         match self {
             Value::String(s) => format!("{:?}", s),
@@ -158,7 +187,7 @@ where
 }
 
 #[derive(Clone, Debug)]
-pub struct BMONHandler(pub Value<'static>, pub &'static str);
+pub struct BMONHandler(pub Value, pub &'static str);
 
 impl Handler for BMONHandler {
     fn handle<'r>(&self, req: &'r Request, _data: Data) -> Outcome<'r> {
