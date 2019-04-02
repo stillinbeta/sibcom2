@@ -20,3 +20,9 @@ impl From<std::io::Error> for Error {
         Error::IOError(source)
     }
 }
+
+impl From<serde_yaml::Error> for Error {
+    fn from(source: serde_yaml::Error) -> Self {
+        Error::SerdeError(source)
+    }
+}

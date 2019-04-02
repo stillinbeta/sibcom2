@@ -2,6 +2,7 @@ extern crate htmlescape;
 extern crate proc_macro2;
 extern crate quote;
 extern crate rocket;
+extern crate serde_yaml;
 
 use quote::quote;
 use rocket::handler::{Handler, Outcome};
@@ -69,6 +70,12 @@ pub enum Value {
     Null,
 }
 
+impl From<&str> for Value {
+    fn from(source: &str) -> Self {
+        Value::String(String::from(source))
+    }
+}
+
 impl quote::ToTokens for Value {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let ts = match self {
@@ -87,7 +94,7 @@ impl quote::ToTokens for Value {
             Value::Object(m) => {
                 let keys = m.iter().map(|(k, _)| quote! { #k });
                 let values = m.iter().map(|(_, v)| quote! { #v });
-                quote!(bmon::Value::Object(vec![#((#keys, #values),)*]))
+                quote! { bmon::Value::Object(vec![#((#keys, #values),)*]) }
             }
         };
 
@@ -205,5 +212,41 @@ impl Handler for BMONHandler {
             }
         };
         Outcome::from(req, response)
+    }
+}
+
+impl From<serde_yaml::Value> for Value {
+    fn from(source: serde_yaml::Value) -> Self {
+        match source {
+            serde_yaml::Value::Null => Value::Null,
+            serde_yaml::Value::Bool(b) => Value::Boolean(b),
+            serde_yaml::Value::Number(n) => {
+                let v = match n {
+                    _ if n.is_f64() => n.as_f64().unwrap().round() as i64,
+                    _ if n.is_u64() => n.as_u64().unwrap() as i64,
+                    _ if n.is_i64() => n.as_i64().unwrap(),
+                    _ => unreachable!(),
+                };
+                Value::Number(v)
+            }
+            serde_yaml::Value::String(s) => {
+                if s.starts_with('/') {
+                    Value::RelativeLink(s)
+                } else if s.contains('/') {
+                    Value::Link(s)
+                } else {
+                    Value::String(s)
+                }
+            }
+            serde_yaml::Value::Sequence(s) => {
+                Value::Sequence(s.into_iter().map(Value::from).collect())
+            }
+            serde_yaml::Value::Mapping(mapping) => Value::Object(
+                mapping
+                    .into_iter()
+                    .map(|(k, v)| (k.into(), v.into()))
+                    .collect(),
+            ),
+        }
     }
 }

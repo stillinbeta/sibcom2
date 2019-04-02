@@ -1,3 +1,4 @@
+extern crate bmon;
 extern crate proc_macro2;
 extern crate quote;
 extern crate serde_yaml;
@@ -11,31 +12,45 @@ use std::fs::File;
 use std::io::Read;
 
 #[derive(Debug, Deserialize, PartialEq)]
-pub struct Site {
+struct SiteIntermediate {
     #[serde(with = "tuple_vec_map")]
-    pub pages: Vec<(String, serde_yaml::Value)>,
+    pages: Vec<(String, serde_yaml::Value)>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Site {
+    pub pages: Vec<(String, bmon::Value)>,
+}
+
+impl From<SiteIntermediate> for Site {
+    fn from(source: SiteIntermediate) -> Self {
+        Site {
+            pages: source
+                .pages
+                .into_iter()
+                .map(|(k, v)| (k, v.into()))
+                .collect(),
+        }
+    }
 }
 
 impl Site {
-    pub fn with_nav(&self) -> HashMap<String, serde_yaml::Value> {
-        let nav: serde_yaml::Value = self
-            .pages
-            .iter()
-            .map(|(k, _v)| serde_yaml::Value::from(k.as_str()))
-            .collect();
+    pub fn with_nav(&self) -> HashMap<String, bmon::Value> {
+        let nav = bmon::Value::Sequence(
+            self.pages
+                .iter()
+                .map(|(k, _v)| bmon::Value::String(k.clone()))
+                .collect(),
+        );
         self.pages
             .iter()
             .map(|(k, v)| {
                 (
                     k.clone(),
-                    serde_yaml::Value::Mapping(
-                        vec![
-                            (serde_yaml::Value::from("nav"), nav.clone()),
-                            (serde_yaml::Value::from(k.clone().split_off(1)), v.clone()),
-                        ]
-                        .into_iter()
-                        .collect(),
-                    ),
+                    bmon::Value::Object(vec![
+                        (bmon::Value::String("nav".into()), nav.clone()),
+                        (bmon::Value::String(k.clone().split_off(1)), v.clone()),
+                    ]),
                 )
             })
             .collect()
@@ -43,7 +58,8 @@ impl Site {
 }
 
 pub(crate) fn parse_site(site: &str) -> Result<Site, Error> {
-    serde_yaml::from_str(site).map_err(Error::SerdeError)
+    let v: SiteIntermediate = serde_yaml::from_str(site)?;
+    Ok(v.into())
 }
 
 pub(crate) fn load_file(ts: TokenStream) -> Result<String, Error> {
@@ -67,33 +83,23 @@ mod test {
             pages: vec![
                 (
                     "/".into(),
-                    serde_yaml::Value::Mapping(
-                        vec![
-                            ("name".into(), "Twilight Sparkle".into()),
-                            ("occupation".into(), "Princess of Friendship".into()),
-                        ]
-                        .iter()
-                        .cloned()
-                        .collect(),
-                    ),
+                    bmon::Value::Object(vec![
+                        ("name".into(), "Twilight Sparkle".into()),
+                        ("occupation".into(), "Princess of Friendship".into()),
+                    ]),
                 ),
                 (
                     "/friends".into(),
-                    serde_yaml::Value::Mapping(
-                        vec![(
-                            "ponyville".into(),
-                            serde_yaml::Value::Sequence(vec![
-                                "Applejack".into(),
-                                "Fluttershy".into(),
-                                "Pinkie Pie".into(),
-                                "Rainbow Dash".into(),
-                                "Rarity".into(),
-                            ]),
-                        )]
-                        .iter()
-                        .cloned()
-                        .collect(),
-                    ),
+                    bmon::Value::Object(vec![(
+                        "ponyville".into(),
+                        bmon::Value::Sequence(vec![
+                            "Applejack".into(),
+                            "Fluttershy".into(),
+                            "Pinkie Pie".into(),
+                            "Rainbow Dash".into(),
+                            "Rarity".into(),
+                        ]),
+                    )]),
                 ),
             ],
         };
