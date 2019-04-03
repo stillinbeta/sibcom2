@@ -1,0 +1,12 @@
+[package]
+name = "updater"
+version = "0.1.0"
+authors = ["Ellie Frost <web@stillinbeta.com>"]
+edition = "2018"
+
+[dependencies]
+redis = "0.10.0"
+envy = "0.4"
+slog = "2.4.1"
+slog-term = "2.4.0"
+serde = { version = "1.0", features = ["derive"] }
