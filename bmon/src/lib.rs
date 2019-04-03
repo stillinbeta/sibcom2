@@ -4,19 +4,19 @@ extern crate quote;
 extern crate rocket;
 extern crate serde;
 extern crate serde_yaml;
-use serde::ser::{SerializeMap, SerializeSeq};
 
 mod handler;
 mod html;
 
 pub use handler::BMONHandler;
 use quote::quote;
+use rocket::http::uri::Uri;
+use serde::ser::{SerializeMap, SerializeSeq};
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Value {
     String(String),
-    Link(String), // Will be hotlinked if rendered as HTML
-    RelativeLink(String),
+    Link(String, String), // Will be hotlinked if rendered as HTML
     Sequence(Vec<Value>),
     Object(Vec<(Value, Value)>), // Easier to make literals of
     Number(i64),
@@ -34,8 +34,9 @@ impl quote::ToTokens for Value {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let ts = match self {
             Value::String(s) => quote! { bmon::Value::String(String::from(#s)) },
-            Value::Link(s) => quote! { bmon::Value::Link(String::from(#s)) },
-            Value::RelativeLink(s) => quote! {  bmon::Value::RelativeLink(String::from(#s)) },
+            Value::Link(u, s) => {
+                quote! { bmon::Value::Link(String::from(#u), String::from(#s)) }
+            }
             Value::Number(n) => quote! { bmon::Value::Number(#n) },
             Value::Boolean(b) => quote! { bmon::Value::Boolean(#b) },
             Value::Null => quote! { bmon::Value::Null },
@@ -56,33 +57,6 @@ impl quote::ToTokens for Value {
     }
 }
 
-impl Value {
-    fn to_json(&self) -> String {
-        match self {
-            Value::String(s) => format!("{:?}", s),
-            Value::Link(s) => format!("{:?}", s),
-            Value::RelativeLink(s) => format!("{:?}", s),
-            Value::Number(n) => format!("{}", n),
-            Value::Boolean(b) => format!("{}", b),
-            Value::Null => "null".into(),
-            Value::Sequence(s) => format!(
-                "[{}]",
-                s.iter()
-                    .map(|v| v.to_json())
-                    .collect::<Vec<String>>()
-                    .join(",")
-            ),
-            Value::Object(m) => format!(
-                "{{{}}}",
-                m.iter()
-                    .map(|(k, v)| format!("{}:{}", k.to_json(), v.to_json()))
-                    .collect::<Vec<String>>()
-                    .join(",")
-            ),
-        }
-    }
-}
-
 impl serde::Serialize for Value {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -90,8 +64,7 @@ impl serde::Serialize for Value {
     {
         match self {
             Value::String(s) => serializer.serialize_str(s),
-            Value::Link(s) => serializer.serialize_str(s),
-            Value::RelativeLink(s) => serializer.serialize_str(s),
+            Value::Link(_, s) => serializer.serialize_str(&s.to_string()),
             Value::Number(n) => serializer.serialize_i64(*n),
             Value::Boolean(b) => serializer.serialize_bool(*b),
             Value::Null => serializer.serialize_unit(),
@@ -129,9 +102,12 @@ impl From<serde_yaml::Value> for Value {
             }
             serde_yaml::Value::String(s) => {
                 if s.starts_with('/') {
-                    Value::RelativeLink(s)
+                    let _ = Uri::parse(&s).expect("invalid relative URL");
+                    Value::Link(s.clone(), s)
                 } else if s.contains('/') {
-                    Value::Link(s)
+                    let uri = format!("https://{}", s);
+                    let _ = Uri::parse(&uri).expect("invalid relative URL");
+                    Value::Link(uri, s)
                 } else {
                     Value::String(s)
                 }

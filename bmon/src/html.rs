@@ -55,15 +55,11 @@ impl Value {
                 r#""{}""#,
                 span!("string", "{}", htmlescape::encode_minimal(s))
             ),
-            Value::Link(s) => span!(
+            Value::Link(link, display) => span!(
                 "link",
-                r#""<a href="https://{0}">{0}</a>""#,
-                htmlescape::encode_minimal(s)
-            ),
-            Value::RelativeLink(s) => span!(
-                "link",
-                r#""<a href="{0}">{0}</a>""#,
-                htmlescape::encode_minimal(s)
+                r#""<a href="{0}">{1}</a>""#,
+                link.to_string(),
+                display
             ),
             Value::Boolean(b) => span!("boolean", "{}", b),
             Value::Number(n) => span!("number", "{}", n),

@@ -38,7 +38,7 @@ impl Site {
         bmon::Value::Sequence(
             self.pages
                 .iter()
-                .map(|(k, _v)| bmon::Value::RelativeLink(k.clone()))
+                .map(|(k, _v)| bmon::Value::Link(k.clone(), k.clone()))
                 .collect(),
         )
     }

@@ -23,7 +23,7 @@ pub struct BMONHandler {
 impl BMONHandler {
     pub fn new(body: Value, nav: Value, title: &'static str) -> Self {
         match body {
-            Value::Link(s) | Value::RelativeLink(s) => Self {
+            Value::Link(_, s) => Self {
                 body: PageValue::Redirect(s),
                 title: title,
             },
