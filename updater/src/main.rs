@@ -3,10 +3,15 @@ extern crate redis;
 extern crate serde;
 extern crate slog;
 extern crate slog_term;
+
+extern crate updater;
+
 use redis::Commands;
 use serde::Deserialize;
 use slog::{crit, error, o, Drain};
 use std::convert::AsRef;
+
+use updater::Updater;
 
 fn default_namespace() -> String {
     "sibcom2".into()
@@ -16,19 +21,11 @@ fn default_namespace() -> String {
 struct Config {
     redis_url: String,
 
+    google_cookie: String,
+    bing_maps_key: String,
+
     #[serde(default = "default_namespace")]
-    namespace: String,
-}
-
-#[derive(Debug)]
-enum Error {
-    OtherError(String),
-}
-
-trait Updater {
-    fn name(&self) -> &'static str;
-
-    fn new_value(&mut self) -> Result<String, Error>;
+    redis_namespace: String,
 }
 
 fn main() {
@@ -40,17 +37,23 @@ fn main() {
     let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
     let root = slog::Logger::root(slog_term::FullFormat::new(plain).build().fuse(), o!());
 
-    let updaters: Vec<Box<dyn Updater>> = vec![];
+    let updaters: Vec<Box<dyn Updater>> = vec![Box::new(updater::Location::new(
+        &root,
+        &cfg.google_cookie,
+        &cfg.bing_maps_key,
+    ))];
 
     for mut updater in updaters {
         match updater.new_value() {
             Err(err) => {
-                error!(root, "updater error"; "updater" => updater.name(), "err"=> ?err)
+                error!(root, "updater error"; "updater" => updater.name(), "err"=> ?err);
             }
-            Ok(val) => conn.set("{}::{}", val).unwrap_or_else(|e| {
+            Ok(val) => {
+                conn.set(format!("{}::{}", cfg.redis_namespace, updater.name()), val).unwrap_or_else(|e| {
                     crit!(root, "redis_error"; "url" => &cfg.redis_url, "updater" => updater.name(), "err" => e.to_string());
                     panic!(e)
-                }),
+            });
+            }
         }
     }
 }
