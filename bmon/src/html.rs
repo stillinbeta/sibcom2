@@ -69,7 +69,7 @@ impl Value {
             Value::Number(n) => span!("number", "{}", n),
             Value::Null => span!("null", "null"),
             Value::Sequence(s) => format!(
-                "{}{}{}\n",
+                "{}{}{}",
                 span!("bracket-open", "["),
                 div!("bracket-inner", "{}", Self::make_rows(s, |v| v.to_html())),
                 span!("bracket-close", "]")

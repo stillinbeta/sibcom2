@@ -39,7 +39,7 @@ impl Site {
         let nav = bmon::Value::Sequence(
             self.pages
                 .iter()
-                .map(|(k, _v)| bmon::Value::String(k.clone()))
+                .map(|(k, _v)| bmon::Value::RelativeLink(k.clone()))
                 .collect(),
         );
         self.pages
