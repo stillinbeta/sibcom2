@@ -82,6 +82,6 @@ pages:
       - docker
     code: "github.com/stillinbeta/do-mastodon"
     site: null
-  '/resume': 'static.stillinbeta.com/elliefrost-resume.pdf'
+  '/resume': 'https://static.stillinbeta.com/elliefrost-resume.pdf'
 
   

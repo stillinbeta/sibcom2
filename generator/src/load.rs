@@ -7,7 +7,6 @@ extern crate syn;
 use crate::error::Error;
 use proc_macro2::TokenStream;
 use serde::Deserialize;
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
@@ -35,25 +34,13 @@ impl From<SiteIntermediate> for Site {
 }
 
 impl Site {
-    pub fn with_nav(&self) -> HashMap<String, bmon::Value> {
-        let nav = bmon::Value::Sequence(
+    pub fn nav(&self) -> bmon::Value {
+        bmon::Value::Sequence(
             self.pages
                 .iter()
                 .map(|(k, _v)| bmon::Value::RelativeLink(k.clone()))
                 .collect(),
-        );
-        self.pages
-            .iter()
-            .map(|(k, v)| {
-                (
-                    k.clone(),
-                    bmon::Value::Object(vec![
-                        (bmon::Value::String("nav".into()), nav.clone()),
-                        (bmon::Value::String(k.clone().split_off(1)), v.clone()),
-                    ]),
-                )
-            })
-            .collect()
+        )
     }
 }
 
