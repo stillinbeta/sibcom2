@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test-image:
+  test:
     docker:
     - image: rustlang/rust:nightly
     steps:
@@ -9,17 +9,34 @@ jobs:
           name: Print version information
           command: rustc --version; cargo --version
       - run:
-          name: "Run tests"
-          command: cargo test --verbose
-      - run:
           name: "Build all packages"
           command: cargo build --verbose
       - run:
-          name: "Build all packages"
+          name: "Run tests"
+          command: cargo test --verbose
+
+jobs:
+  build:
+    docker:
+    - image: rustlang/rust:nightly
+    steps:
+      - checkout
+      - run:
+          name: "Build release package"
           command: cargo build --release
+      - setup_remote_docker
+      - run: make docker-login
+      - run: make docker-push
+    
+
 
 workflows:
   version: 2
   run:
     jobs:
       - test-image
+      - build:
+          filters:
+            branches:
+              only: circleci
+    
