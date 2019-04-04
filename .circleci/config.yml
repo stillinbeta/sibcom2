@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  test-image:
+    docker:
+    - image: rustlang/rust:nightly
+    steps:
+      - checkout
+      - run:
+          name: Print version information
+          command: rustc --version; cargo --version
+      - run:
+          name: "Run tests"
+          command: cargo test --verbose --frozen
+      - run:
+          name: "Build all packages"
+          command: cargo build
+  release-image:
+    docker:
+    - image: rustlang/rust:nightly
+    steps:
+      - checkout
+      - run:
+          name: "Build all packages"
+          command: cargo build --release
