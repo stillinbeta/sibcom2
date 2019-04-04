@@ -26,9 +26,6 @@ struct Config {
 
     github_api_token: String,
 
-    mastodon_instance: String,
-    mastodon_user_id: String,
-
     #[serde(default = "default_namespace")]
     redis_namespace: String,
 }
