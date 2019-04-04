@@ -1,3 +1,5 @@
+extern crate dissolve;
+extern crate itertools;
 extern crate mammut;
 extern crate serde;
 
@@ -47,7 +49,9 @@ impl<'a> crate::Updater for Mastodon<'a> {
             .next()
             .ok_or::<crate::Error>("No statuses".into())?;
 
-        debug!(self.log, "retrieved status"; "status" => ?status);
+        let message = itertools::join(dissolve::strip_html_tags(&status.content), " ");
+
+        debug!(self.log, "retrieved status"; "message" => message, "status" => ?status);
 
         Ok(serde_json::to_string(&Status {
             message: status.content,
