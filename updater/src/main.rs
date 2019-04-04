@@ -24,6 +24,8 @@ struct Config {
     google_cookie: String,
     bing_maps_key: String,
 
+    github_api_token: String,
+
     #[serde(default = "default_namespace")]
     redis_namespace: String,
 }
@@ -37,11 +39,14 @@ fn main() {
     let plain = slog_term::PlainSyncDecorator::new(std::io::stdout());
     let root = slog::Logger::root(slog_term::FullFormat::new(plain).build().fuse(), o!());
 
-    let updaters: Vec<Box<dyn Updater>> = vec![Box::new(updater::Location::new(
-        &root,
-        &cfg.google_cookie,
-        &cfg.bing_maps_key,
-    ))];
+    let updaters: Vec<Box<dyn Updater>> = vec![
+        Box::new(updater::Location::new(
+            &root,
+            &cfg.google_cookie,
+            &cfg.bing_maps_key,
+        )),
+        Box::new(updater::Github::new(&root, &cfg.github_api_token)),
+    ];
 
     for mut updater in updaters {
         match updater.new_value() {

@@ -15,3 +15,7 @@ serde = { version = "1.0", features = ["derive"] }
 locationsharing = "0.1.2"
 bingmaps = "0.0.3"
 itertools = "0.8.0"
+
+#github.rs 
+reqwest = "0.9.13"
+serde_json = "1.0"

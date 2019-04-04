@@ -46,7 +46,7 @@ impl<'a> crate::Updater for Location<'a> {
                     &address.address.locality,
                     &address.address.admin_district1,
                     &address.address.country,
-                
+                ]
                 .into_iter()
                 .flat_map(|x| x)
                 .collect();

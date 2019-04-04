@@ -1919,7 +1919,9 @@ dependencies = [
  "itertools 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "locationsharing 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "redis 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "reqwest 0.9.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.89 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_json 1.0.39 (registry+https://github.com/rust-lang/crates.io-index)",
  "slog 2.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "slog-term 2.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

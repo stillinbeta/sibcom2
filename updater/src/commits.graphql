@@ -1,0 +1,16 @@
+{
+  viewer {
+    commitComments(last: 1) {
+      nodes {
+        commit {
+          message
+          url
+        }
+        repository {
+          url
+          nameWithOwner
+        }
+      }
+    }
+  }
+}
