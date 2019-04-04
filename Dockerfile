@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/cc
+FROM gcr.io/distroless/static
 
 COPY /target/release/sibcom2 /
 COPY /target/release/updater /
