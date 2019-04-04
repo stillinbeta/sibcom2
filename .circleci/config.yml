@@ -1,7 +1,6 @@
 version: 2
-
 jobs:
-  test:
+  test-image:
     docker:
     - image: rustlang/rust:nightly
     steps:
@@ -11,10 +10,16 @@ jobs:
           command: rustc --version; cargo --version
       - run:
           name: "Run tests"
-          command: cargo test --verbose --frozen
+          command: cargo test --verbose
       - run:
           name: "Build all packages"
-          command: cargo build
+          command: cargo build --verbose
       - run:
-          name: "Build release packages"
+          name: "Build all packages"
           command: cargo build --release
+
+workflows:
+  version: 2
+  run:
+    jobs:
+      - test-image
