@@ -1,6 +1,7 @@
 extern crate envy;
 extern crate redis;
 extern crate serde;
+#[macro_use]
 extern crate slog;
 extern crate slog_term;
 
@@ -8,7 +9,7 @@ extern crate updater;
 
 use redis::Commands;
 use serde::Deserialize;
-use slog::{crit, error, o, Drain};
+use slog::Drain;
 use std::convert::AsRef;
 
 use updater::Updater;
@@ -55,10 +56,15 @@ fn main() {
                 error!(root, "updater error"; "updater" => updater.name(), "err"=> ?err);
             }
             Ok(val) => {
-                conn.set(format!("{}::{}", cfg.redis_namespace, updater.name()), val).unwrap_or_else(|e| {
-                    crit!(root, "redis_error"; "url" => &cfg.redis_url, "updater" => updater.name(), "err" => e.to_string());
-                    panic!(e)
-            });
+                match conn.set(format!("{}::{}", cfg.redis_namespace, updater.name()), &val) {
+                    Err(e) => {
+                        crit!(root, "redis_error"; "url" => &cfg.redis_url, "updater" => updater.name(), "err" => e.to_string());
+                        panic!(e)
+                    }
+                    Ok(()) => {
+                        info!(root, "updated status"; "updater" => updater.name(), "value" => &val)
+                    }
+                }
             }
         }
     }
