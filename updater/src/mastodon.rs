@@ -51,10 +51,10 @@ impl<'a> crate::Updater for Mastodon<'a> {
 
         let message = itertools::join(dissolve::strip_html_tags(&status.content), " ");
 
-        debug!(self.log, "retrieved status"; "message" => message, "status" => ?status);
+        debug!(self.log, "retrieved status"; "message" => &message, "status" => ?status);
 
         Ok(serde_json::to_string(&Status {
-            message: status.content,
+            message: message,
             url: status.url.unwrap_or(status.uri),
         })?)
     }
