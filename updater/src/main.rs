@@ -26,6 +26,9 @@ struct Config {
 
     github_api_token: String,
 
+    mastodon_instance: String,
+    mastodon_user_id: String,
+
     #[serde(default = "default_namespace")]
     redis_namespace: String,
 }
@@ -46,6 +49,7 @@ fn main() {
             &cfg.bing_maps_key,
         )),
         Box::new(updater::Github::new(&root, &cfg.github_api_token)),
+        Box::new(updater::Mastodon::new(&root)),
     ];
 
     for mut updater in updaters {

@@ -1,5 +1,6 @@
 extern crate bingmaps;
 extern crate locationsharing;
+extern crate mammut;
 extern crate reqwest;
 extern crate serde_json;
 #[macro_use]
@@ -7,9 +8,11 @@ extern crate slog;
 
 mod github;
 mod location;
+mod mastodon;
 
 pub use github::Github;
 pub use location::Location;
+pub use mastodon::Mastodon;
 
 #[derive(Debug)]
 pub enum Error {
@@ -18,6 +21,7 @@ pub enum Error {
     BingMapsError(bingmaps::Error),
     ReqwestError(reqwest::Error),
     SerdeJSONError(serde_json::Error),
+    MammutError(mammut::Error),
 }
 
 impl From<locationsharing::error::Error> for Error {
@@ -53,6 +57,12 @@ impl From<reqwest::Error> for Error {
 impl From<serde_json::Error> for Error {
     fn from(source: serde_json::Error) -> Self {
         Error::SerdeJSONError(source)
+    }
+}
+
+impl From<mammut::Error> for Error {
+    fn from(source: mammut::Error) -> Self {
+        Error::MammutError(source)
     }
 }
 
