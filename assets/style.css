@@ -1,7 +1,18 @@
 body {
     padding: 1em;
-    font-family: "Inconsolata";
+    font-family: "Inconsolata", monospace;
     font-size: 18pt;
+}
+
+.theme-preview {
+  margin: 0.25em;
+  padding: 1em;
+  float: right;
+}
+
+.theme-previews {
+    top: 0;
+    right: 0;
 }
 
 div.brace-inner, div.bracket-inner {
@@ -9,7 +20,7 @@ div.brace-inner, div.bracket-inner {
 }
 
 .solarized-dark {
-    background-color:  #002b36;
+    background-color: #002b36;
     color: #657b83;
 }
 
@@ -22,7 +33,7 @@ div.brace-inner, div.bracket-inner {
     font-weight: bold;
 }
 
-.solarized-dark span.string{
+.solarized-dark span.string {
     color: #859900;
 }
 
@@ -43,7 +54,6 @@ div.brace-inner, div.bracket-inner {
 .solarized-light {
     background-color: #fdf6e3;
     color: #839496;
-
 }
 
 .solarized-light span.brace-open, .solarized-light span.brace-close, .solarized-light span.bracket-open, .solarized-light span.bracket-close {
@@ -55,7 +65,7 @@ div.brace-inner, div.bracket-inner {
     font-weight: bold;
 }
 
-.solarized-light span.string{
+.solarized-light span.string {
     color: #859900;
 }
 
@@ -79,12 +89,12 @@ div.brace-inner, div.bracket-inner {
     text-shadow: 0 0 5px #00FF00;
 }
 
-.terminal span.link a{
+.terminal span.link a {
     color: #00FF00;
     text-shadow: 0 0 5px #00FF00;
 }
 
-.solarized-light span.link a:visited {
+.terminal span.link a:visited {
     color: #00FF00;
     text-shadow: 0 0 5px #00FF00;
 }

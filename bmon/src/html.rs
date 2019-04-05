@@ -67,6 +67,9 @@ macro_rules! html_page {
 <style type="text/css">
 {}
 </style>
+<script type="text/javascript">
+{}
+</script>
 </head>
 <body class="{}">
 {}
@@ -75,6 +78,7 @@ macro_rules! html_page {
 "#,
             $title,
             include_str!("../../assets/style.css"),
+            include_str!("../../assets/script.js"),
             $theme,
             $body
         )
