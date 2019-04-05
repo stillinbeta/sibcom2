@@ -1,7 +1,11 @@
 extern crate bingmaps;
 extern crate itertools;
 extern crate locationsharing;
+extern crate serde;
+extern crate serde_json;
 extern crate slog;
+
+use serde::{Deserialize, Serialize};
 
 pub struct Location<'a> {
     log: &'a slog::Logger,
@@ -18,6 +22,11 @@ impl<'a> Location<'a> {
             bing_maps_token,
         }
     }
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Position {
+    pub position: String,
 }
 
 impl<'a> crate::Updater for Location<'a> {
@@ -43,7 +52,7 @@ impl<'a> crate::Updater for Location<'a> {
                 debug!(self.log, "retrieved"; "result" => ?address);
 
                 let parts: Vec<&String> = vec![
-                    &address.address.locality,
+                    &address.address.admin_district2,
                     &address.address.admin_district1,
                     &address.address.country,
                 ]
@@ -52,7 +61,9 @@ impl<'a> crate::Updater for Location<'a> {
                 .collect();
                 let location: String = itertools::join(parts, ", ");
                 debug!(self.log, "success"; "location" => &location);
-                Ok(location)
+
+                let position = serde_json::to_string(&Position { position: location })?;
+                Ok(position)
             }
             None => {
                 warn!(self.log, "no results"; "coordinates" => ?(loc.latitude, loc.longitude));

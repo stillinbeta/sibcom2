@@ -77,22 +77,22 @@ struct Comments {
     nodes: Vec<Node>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Node {
-    commit: Commit,
+    pub commit: Commit,
 
-    repository: Repository,
+    pub repository: Repository,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Commit {
-    message: String,
-    url: String,
+    pub message: String,
+    pub url: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Repository {
-    url: String,
+    pub url: String,
     #[serde(rename = "nameWithOwner")]
-    name: String,
+    pub name: String,
 }

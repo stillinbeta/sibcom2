@@ -3,7 +3,7 @@ extern crate itertools;
 extern crate mammut;
 extern crate serde;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 pub struct Mastodon<'a> {
     log: &'a slog::Logger,
@@ -29,10 +29,10 @@ impl<'a> Mastodon<'a> {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Status {
-    message: String,
-    url: String,
+    pub message: String,
+    pub url: String,
 }
 
 impl<'a> crate::Updater for Mastodon<'a> {

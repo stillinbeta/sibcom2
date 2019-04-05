@@ -64,7 +64,7 @@ impl serde::Serialize for Value {
     {
         match self {
             Value::String(s) => serializer.serialize_str(s),
-            Value::Link(_, s) => serializer.serialize_str(&s.to_string()),
+            Value::Link(s, _) => serializer.serialize_str(&s.to_string()),
             Value::Number(n) => serializer.serialize_i64(*n),
             Value::Boolean(b) => serializer.serialize_bool(*b),
             Value::Null => serializer.serialize_unit(),
