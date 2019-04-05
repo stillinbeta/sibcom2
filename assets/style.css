@@ -19,9 +19,11 @@ div.brace-inner, div.bracket-inner {
     margin-left: 1em;
 }
 
+/* dark theme */
 .solarized-dark {
     background-color: #002b36;
     color: #657b83;
+    text-shadow: 0 0 0;
 }
 
 .solarized-dark span.brace-open, .solarized-dark span.brace-close, .solarized-dark span.bracket-open, .solarized-dark span.bracket-close {
@@ -54,6 +56,7 @@ div.brace-inner, div.bracket-inner {
 .solarized-light {
     background-color: #fdf6e3;
     color: #839496;
+    text-shadow: 0 0 0;
 }
 
 .solarized-light span.brace-open, .solarized-light span.brace-close, .solarized-light span.bracket-open, .solarized-light span.bracket-close {
