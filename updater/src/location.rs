@@ -1,6 +1,6 @@
-extern crate bingmaps;
 extern crate itertools;
 extern crate locationsharing;
+extern crate mapquest;
 extern crate serde;
 extern crate serde_json;
 extern crate slog;
@@ -11,15 +11,15 @@ pub struct Location<'a> {
     log: &'a slog::Logger,
     cookie: &'a str,
 
-    bing_maps_token: &'a str,
+    mapquest_token: &'a str,
 }
 
 impl<'a> Location<'a> {
-    pub fn new(log: &'a slog::Logger, cookie: &'a str, bing_maps_token: &'a str) -> Self {
+    pub fn new(log: &'a slog::Logger, cookie: &'a str, mapquest_token: &'a str) -> Self {
         Self {
             log,
             cookie,
-            bing_maps_token,
+            mapquest_token,
         }
     }
 }
@@ -42,19 +42,16 @@ impl<'a> crate::Updater for Location<'a> {
 
         let loc = locs.first().ok_or("No locations returned")?;
 
-        let client = bingmaps::Client::new(self.bing_maps_token);
-        let params = bingmaps::locations::FindPoint::from_latlng(loc.latitude, loc.longitude);
-
-        let addresses = bingmaps::locations::Location::find_by_point(&client, params, None)?;
-
-        match addresses.first() {
+        let client = mapquest::geocode::Client::new(self.mapquest_token);
+        let addresses = client.reverse_geocode(loc.latitude as f32, loc.longitude as f32)?;
+        match addresses.results.first().and_then(|r| r.locations.first()) {
             Some(address) => {
                 debug!(self.log, "retrieved"; "result" => ?address);
 
                 let parts: Vec<&String> = vec![
-                    &address.address.admin_district2,
-                    &address.address.admin_district1,
-                    &address.address.country,
+                    &address.admin_area_5,
+                    &address.admin_area_3,
+                    &address.admin_area_1,
                 ]
                 .into_iter()
                 .flat_map(|x| x)
@@ -67,7 +64,7 @@ impl<'a> crate::Updater for Location<'a> {
             }
             None => {
                 warn!(self.log, "no results"; "coordinates" => ?(loc.latitude, loc.longitude));
-                Err("no results".into())
+                Err("no location found".into())
             }
         }
     }

@@ -1,6 +1,6 @@
-extern crate bingmaps;
 extern crate locationsharing;
 extern crate mammut;
+extern crate mapquest;
 extern crate redis;
 extern crate reqwest;
 extern crate serde_json;
@@ -21,7 +21,7 @@ pub use mastodon::Mastodon;
 pub enum Error {
     OtherError(String),
     LocationSharingError(locationsharing::error::Error),
-    BingMapsError(bingmaps::Error),
+    MapquestError(mapquest::Error),
     ReqwestError(reqwest::Error),
     SerdeJSONError(serde_json::Error),
     MammutError(mammut::Error),
@@ -46,9 +46,9 @@ impl From<String> for Error {
     }
 }
 
-impl From<bingmaps::Error> for Error {
-    fn from(source: bingmaps::Error) -> Self {
-        Error::BingMapsError(source)
+impl From<mapquest::Error> for Error {
+    fn from(source: mapquest::Error) -> Self {
+        Error::MapquestError(source)
     }
 }
 

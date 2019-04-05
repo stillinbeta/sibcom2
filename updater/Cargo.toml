@@ -14,7 +14,7 @@ serde_json = "1.0"
 
 # location.rs
 locationsharing = "0.1.2"
-bingmaps = "0.0.3"
+mapquest = "0.1.0"
 itertools = "0.8.0"
 
 # github.rs 

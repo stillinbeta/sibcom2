@@ -23,7 +23,7 @@ struct Config {
     redis_url: String,
 
     google_cookie: String,
-    bing_maps_key: String,
+    mapquest_token: String,
 
     github_api_token: String,
 
@@ -44,7 +44,7 @@ fn main() {
         Box::new(updater::Location::new(
             &root,
             &cfg.google_cookie,
-            &cfg.bing_maps_key,
+            &cfg.mapquest_token,
         )),
         Box::new(updater::Github::new(&root, &cfg.github_api_token)),
         Box::new(updater::Mastodon::new(&root)),
