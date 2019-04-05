@@ -61,6 +61,7 @@ macro_rules! html_page {
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{}</title>
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Inconsolata" type="text/css">
 <style type="text/css">
