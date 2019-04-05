@@ -67,6 +67,47 @@ impl BMONHandler {
             }
         }
     }
+
+    fn get_latest(&self, client: &updater::Client) -> Value {
+        let mastodon = match client.get_mastodon() {
+            Ok(status) => Value::Link(status.url, status.message),
+            // TODO: slog
+            Err(err) => {
+                eprintln!("Mastodon error: {:?}", err);
+                Value::String("unknown".into())
+            }
+        };
+        let github = match client.get_commit() {
+            Ok(commit) => Value::Object(vec![
+                (
+                    Value::String("commit".into()),
+                    Value::Link(commit.commit.url, commit.commit.message),
+                ),
+                (
+                    Value::String("repository".into()),
+                    Value::Link(commit.repository.url, commit.repository.name),
+                ),
+            ]),
+            Err(err) => {
+                eprintln!("Github error: {:?}", err);
+                Value::String("unknown".into())
+            }
+        };
+
+        let location = match client.get_location() {
+            Ok(location) => Value::String(location.position),
+            Err(err) => {
+                eprintln!("Github error: {:?}", err);
+                Value::String("unknown".into())
+            }
+        };
+
+        Value::Object(vec![
+            (Value::String("location".into()), location),
+            (Value::String("toot".into()), mastodon),
+            (Value::String("commit".into()), github),
+        ])
+    }
 }
 
 impl Handler for BMONHandler {
@@ -74,66 +115,25 @@ impl Handler for BMONHandler {
         match &self.body {
             PageValue::Redirect(r) => Outcome::from(req, Redirect::to(r.clone())), // TODO can we eliminate this clone?
             PageValue::Body(body) => self.send_value(req, body),
-            PageValue::Homepage(body, nav, client) => {
-                match body {
-                    Value::Object(map) => {
-                        let mastodon = match client.get_mastodon() {
-                            Ok(status) => Value::Link(status.url, status.message),
-                            // TODO: slog
-                            Err(err) => {
-                                eprintln!("Mastodon error: {:?}", err);
-                                Value::String("unknown".into())
-                            }
-                        };
-                        let github = match client.get_commit() {
-                            Ok(commit) => Value::Object(vec![
-                                (
-                                    Value::String("commit".into()),
-                                    Value::Link(commit.commit.url, commit.commit.message),
-                                ),
-                                (
-                                    Value::String("repository".into()),
-                                    Value::Link(commit.repository.url, commit.repository.name),
-                                ),
-                            ]),
-                            Err(err) => {
-                                eprintln!("Github error: {:?}", err);
-                                Value::String("unknown".into())
-                            }
-                        };
+            PageValue::Homepage(body, nav, client) => match body {
+                Value::Object(map) => {
+                    let mut body = map.clone();
+                    body.push((Value::String("latest".into()), self.get_latest(client)));
 
-                        let location = match client.get_location() {
-                            Ok(location) => Value::String(location.position),
-                            Err(err) => {
-                                eprintln!("Github error: {:?}", err);
-                                Value::String("unknown".into())
-                            }
-                        };
-
-                        let mut body = map.clone();
-                        body.push((
-                            Value::String("latest".into()),
-                            Value::Object(vec![
-                                (Value::String("location".into()), location),
-                                (Value::String("toot".into()), mastodon),
-                                (Value::String("commit".into()), github),
-                            ]),
-                        ));
-                        self.send_value(
-                            req,
-                            &Self::make_page_with_nav(
-                                Value::Object(body),
-                                nav.clone(),
-                                self.title.into(),
-                            ),
-                        )
-                    }
-                    _ => {
-                        eprintln!("Homepage not a string!");
-                        self.send_value(req, &body)
-                    }
+                    self.send_value(
+                        req,
+                        &Self::make_page_with_nav(
+                            Value::Object(body),
+                            nav.clone(),
+                            self.title.into(),
+                        ),
+                    )
                 }
-            }
+                _ => {
+                    eprintln!("Homepage not a string!");
+                    self.send_value(req, &body)
+                }
+            },
         }
     }
 }
