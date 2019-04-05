@@ -1,4 +1,35 @@
 use crate::Value;
+use std::fmt::{self, Display};
+use std::str::FromStr;
+
+pub(crate) enum Theme {
+    SolarizedDark,
+    SolarizedLight,
+    Terminal,
+}
+
+impl FromStr for Theme {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "solarized-dark" => Ok(Theme::SolarizedDark),
+            "solarized-light" => Ok(Theme::SolarizedLight),
+            "terminal" => Ok(Theme::Terminal),
+            theme => Err(format!("unknown theme {:?}", theme)),
+        }
+    }
+}
+
+impl Display for Theme {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Theme::SolarizedDark => write!(f, "solarized-dark"),
+            Theme::SolarizedLight => write!(f, "solarized-light"),
+            Theme::Terminal => write!(f, "terminal"),
+        }
+    }
+}
 
 macro_rules! container {
         ($tag: expr, $class : expr, $body: expr $(, $args: expr)*) => {
@@ -24,7 +55,7 @@ macro_rules! span {
 }
 
 macro_rules! html_page {
-    ($title: expr, $body: expr) => {
+    ($title: expr, $theme: expr, $body: expr) => {
         format!(
             r#"<!DOCTYPE html>
 <html>
@@ -36,13 +67,14 @@ macro_rules! html_page {
 {}
 </style>
 </head>
-<body>
+<body class="{}">
 {}
 </body>
 </html>
 "#,
             $title,
             include_str!("../../assets/style.css"),
+            $theme,
             $body
         )
     };
@@ -110,6 +142,6 @@ impl Value {
     }
 }
 
-pub(crate) fn render_page(title: &str, value: &Value) -> String {
-    html_page!(title, value.to_html())
+pub(crate) fn render_page(title: &str, theme: Theme, value: &Value) -> String {
+    html_page!(title, theme, value.to_html())
 }

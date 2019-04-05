@@ -2,37 +2,89 @@ body {
     padding: 1em;
     font-family: "Inconsolata";
     font-size: 18pt;
-    background-color:  #002b36;
-    color: #657b83;
 }
-
-span.brace-open, span.brace-close, span.bracket-open, span.bracket-close {
-    font-weight: bold;
-}
-
 
 div.brace-inner, div.bracket-inner {
     margin-left: 1em;
 }
 
-span.key span.string {
+.solarized-dark {
+    background-color:  #002b36;
+    color: #657b83;
+}
+
+.solarized-dark span.brace-open, .solarized-dark span.brace-close, .solarized-dark span.bracket-open, .solarized-dark span.bracket-close {
+    font-weight: bold;
+}
+
+.solarized-dark span.key span.string {
     color: #268bd2;
     font-weight: bold;
 }
 
-span.string{
+.solarized-dark span.string{
     color: #859900;
 }
 
-span.link a {
+.solarized-dark span.link a {
     color: #859900;
 }
 
-span.link a:visited {
+.solarized-dark span.link a:visited {
     color: #6c71c4;
 }
 
-span.boolean, span.null {
+.solarized-dark span.boolean, .solarized-dark span.null {
     color: #2aa198;
     font-weight: bold;
+}
+
+/* light theme */
+.solarized-light {
+    background-color: #fdf6e3;
+    color: #839496;
+
+}
+
+.solarized-light span.brace-open, .solarized-light span.brace-close, .solarized-light span.bracket-open, .solarized-light span.bracket-close {
+    font-weight: bold;
+}
+
+.solarized-light span.key span.string {
+    color: #268bd2;
+    font-weight: bold;
+}
+
+.solarized-light span.string{
+    color: #859900;
+}
+
+.solarized-light span.link a {
+    color: #859900;
+}
+
+.solarized-light span.link a:visited {
+    color: #6c71c4;
+}
+
+.solarized-light span.boolean, .solarized-light span.null {
+    color: #d33682;
+    font-weight: bold;
+}
+
+/* terminal */
+.terminal {
+    background-color: black;
+    color: #00FF00;
+    text-shadow: 0 0 5px #00FF00;
+}
+
+.terminal span.link a{
+    color: #00FF00;
+    text-shadow: 0 0 5px #00FF00;
+}
+
+.solarized-light span.link a:visited {
+    color: #00FF00;
+    text-shadow: 0 0 5px #00FF00;
 }

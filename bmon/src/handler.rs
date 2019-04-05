@@ -6,6 +6,7 @@ use rocket::response::Redirect;
 use rocket::{Data, Request, Response};
 use rocket_contrib::json::Json;
 use std::io::Cursor;
+use std::str::FromStr;
 
 use crate::html;
 use crate::Value;
@@ -60,9 +61,14 @@ impl BMONHandler {
             Some(v) if *v == Accept::JSON => Outcome::from(req, Json(value)),
             _ => {
                 let mut response = Response::new();
+                let theme = req
+                    .cookies()
+                    .get("theme")
+                    .and_then(|t| FromStr::from_str(t.value()).ok())
+                    .unwrap_or(html::Theme::SolarizedDark);
                 response.set_status(Status::Ok);
                 response.set_header(ContentType::HTML);
-                response.set_sized_body(Cursor::new(html::render_page(self.title, value)));
+                response.set_sized_body(Cursor::new(html::render_page(self.title, theme, value)));
                 Outcome::from(req, response)
             }
         }
