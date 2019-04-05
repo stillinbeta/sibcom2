@@ -10,18 +10,11 @@ pub struct Github<'a> {
     github_api_token: &'a str,
 }
 
-const GRAPH_API_URL: &str = "https://api.github.com/graphql";
-
-#[derive(Serialize)]
-struct Query {
-    query: &'static str,
-}
-
-const GRAPHQL_QUERY: Query = Query {
-    query: include_str!("commits.graphql"),
-};
-
 impl<'a> Github<'a> {
+    const PUBLIC_EVENTS_URL: &'static str =
+        "https://api.github.com/users/stillinbeta/events/public";
+    const EVENT_NAME: &'static str = "PushEvent";
+
     pub fn new(log: &'a slog::Logger, github_api_token: &'a str) -> Self {
         Self {
             log,
@@ -37,50 +30,49 @@ impl<'a> crate::Updater for Github<'a> {
 
     fn new_value(&mut self) -> Result<String, crate::Error> {
         let client = reqwest::Client::new();
-        let response: GraphResponse = client
-            .post(GRAPH_API_URL)
-            .json(&GRAPHQL_QUERY)
+        let mut responses: Vec<Event> = client
+            .get(Self::PUBLIC_EVENTS_URL)
             .header("accept", "application/json")
             .header("authorization", format!("bearer {}", self.github_api_token))
             .send()?
             .error_for_status()?
             .json()?;
 
-        let nodes = response.data.viewer.comments.nodes;
+        responses.reverse();
 
-        debug!(self.log, "Got result"; "node" => ?nodes);
+        let mut responses: Vec<Event> = responses
+            .into_iter()
+            .filter(|e| e.event_type == Self::EVENT_NAME)
+            .collect();
 
-        let node = nodes.first().ok_or("No commits found")?;
+        let mut event = responses.pop().ok_or("No events found")?;
+        let commit = event.payload.commits.pop().ok_or("No commits found")?;
 
-        Ok(serde_json::to_string(&node)?)
+        debug!(self.log, "got event"; "event" => ?event, "commit" => ?commit);
+        Ok(serde_json::to_string(&Node {
+            commit: commit,
+            repository: event.repo,
+        })?)
     }
 }
 
 #[derive(Debug, Deserialize)]
-struct GraphResponse {
-    data: Data,
+struct Event {
+    #[serde(rename = "type")]
+    event_type: String,
+    repo: Repository,
+    payload: Payload,
 }
 
 #[derive(Debug, Deserialize)]
-struct Data {
-    viewer: Viewer,
-}
-
-#[derive(Debug, Deserialize)]
-struct Viewer {
-    #[serde(rename = "commitComments")]
-    comments: Comments,
-}
-
-#[derive(Debug, Deserialize)]
-struct Comments {
-    nodes: Vec<Node>,
+struct Payload {
+    #[serde(default)]
+    commits: Vec<Commit>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Node {
     pub commit: Commit,
-
     pub repository: Repository,
 }
 
@@ -93,6 +85,5 @@ pub struct Commit {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Repository {
     pub url: String,
-    #[serde(rename = "nameWithOwner")]
     pub name: String,
 }
