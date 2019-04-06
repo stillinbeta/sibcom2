@@ -52,8 +52,26 @@ pages:
     slides: "slideshare.net/ElizabethFrost4/kubeadm-deep-dive-kubecon-seattle-2018"
     recording: "youtube.com/watch?v=tAA0Hlag2n0"
     repository: "github.com/kubernetes/kubeadm"
-    
+  - name: "Positive Selfiesteem"
+    conference: "Alterconf Portland 2016"
+    slides: null
+    recording: "youtube.com/watch?v=kImZqJfOLyQ"
+    repository: null
   '/projects':
+  - name: "sibcom2"
+    description: "the second iteration of my website. You're looking at it!"
+    technologies:
+    - rust
+    - redis
+    code: "github.com/stillinbeta/sibcom2"
+    site: "stillinbeta.com"
+  - name: leckie
+    description: "my budget Kubernetes cluster, hosts this site and my mastodon instance"
+    technologies:
+    - kubernetes
+    - "weaveworks flux"
+    - "heptio contour"
+    - "bitnami sealed secret"
   - name: "Zeerust"
     description: "A Z80 emulator written in Rust"
     technologies:
