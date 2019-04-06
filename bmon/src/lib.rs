@@ -1,3 +1,4 @@
+#![feature(proc_macro_hygiene)]
 extern crate htmlescape;
 extern crate proc_macro2;
 extern crate quote;

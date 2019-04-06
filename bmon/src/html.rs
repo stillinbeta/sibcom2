@@ -1,6 +1,10 @@
+extern crate minify;
+
 use crate::Value;
 use std::fmt::{self, Display};
 use std::str::FromStr;
+
+use minify::{minify_css, minify_js};
 
 pub(crate) enum Theme {
     SolarizedDark,
@@ -62,25 +66,25 @@ macro_rules! html_page {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{}</title>
+<title>{title}</title>
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Inconsolata" type="text/css">
 <style type="text/css">
-{}
+{css}
 </style>
-<script type="text/javascript">
-{}
-</script>
 </head>
-<body class="{}">
-{}
+<body class="{theme}">
+{body}
 </body>
+<script type="text/javascript">
+{js}
+</script>
 </html>
 "#,
-            $title,
-            include_str!("../../assets/style.css"),
-            include_str!("../../assets/script.js"),
-            $theme,
-            $body
+            title = $title,
+            css = minify_css!("assets/style.css"),
+            js = minify_js!("assets/script.js"),
+            theme = $theme,
+            body = $body
         )
     };
 }
