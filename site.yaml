@@ -58,6 +58,12 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "puccinia"
+    description: "A telnet game of life implementation"
+    technologies:
+    - rust
+    code: "github.com/stillinbeta/puccinia"
+    site: "telnet stillinbeta.com 30434"
   - name: "sibcom2"
     description: "the second iteration of my website. You're looking at it!"
     technologies:
