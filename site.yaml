@@ -58,6 +58,14 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "ezeerust"
+    description: "wasm frontend for Zeerust z80 emulator"
+    technologies:
+    - rust
+    - wasm
+    - yew
+    code: "github.com/stillinbeta/ezeerust"
+    site: "zeerust.stillinbeta.com"
   - name: "puccinia"
     description: "A telnet game of life implementation"
     technologies:
