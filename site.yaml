@@ -6,7 +6,7 @@ pages:
       - rust
       - ponies
       - girls
-    at: recurse.com/
+    at: recurse.com
   '/contact':
     name: "Liz Frost"
     also_known_as:
@@ -20,7 +20,7 @@ pages:
       mastodon: "gayhorse.club/@beta"
       linkedin: "linkedin.com/in/stillinbeta"
     contact:
-      email: "liz @ [ siβ ] .com"
+      email: "liz @ [ siβ ] dot com"
   '/talks':
   - name: "Kubernetes from a Cake Mix" 
     conference: "SRECon North American 2019"

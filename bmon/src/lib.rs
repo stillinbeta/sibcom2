@@ -105,9 +105,10 @@ impl From<serde_yaml::Value> for Value {
                 if s.starts_with('/') {
                     let _ = Uri::parse(&s).expect("invalid relative URL");
                     Value::Link(s.clone(), s)
-                } else if s.contains('/') {
+                // If it has a space, it's not a url
+                } else if (s.contains('/') || s.contains('.')) && !s.contains(' ') {
                     let uri = format!("https://{}", s);
-                    let _ = Uri::parse(&uri).expect("invalid relative URL");
+                    let _ = Uri::parse(&uri).expect("invalid absolute URL");
                     Value::Link(uri, s)
                 } else {
                     Value::String(s)
@@ -123,5 +124,44 @@ impl From<serde_yaml::Value> for Value {
                     .collect(),
             ),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    macro_rules! assert_link {
+        ($link: expr, $value: expr) => {
+            assert_eq!(
+                Value::Link($link.into(), $value.into()),
+                serde_yaml::Value::String($value.into()).into()
+            )
+        };
+        ($value: expr) => {
+            assert_eq!(
+                Value::Link($value.into(), $value.into()),
+                serde_yaml::Value::String($value.into()).into()
+            )
+        };
+    }
+
+    macro_rules! assert_string {
+        ($value: expr) => {
+            assert_eq!(
+                Value::String($value.into()),
+                serde_yaml::Value::String($value.into()).into()
+            );
+        };
+    }
+
+    #[test]
+    fn test_links() {
+        assert_link!("/some/path");
+        assert_link!("https://github.com/stillinbeta", "github.com/stillinbeta");
+        assert_string!("hello world");
+        assert_string!("A sentence. Another sentence.");
+        assert_string!("telnet stillinbeta.com 30434");
+        assert_link!("https://stillinbeta.com", "stillinbeta.com");
     }
 }
