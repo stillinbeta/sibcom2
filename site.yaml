@@ -109,11 +109,18 @@ pages:
   - name: "do-mastodon"
     description: "A set of terraform an ansible scripts for running Mastodon on a Digital Ocean droplet"
     technologies:
-      - ansible
-      - terraform
-      - docker
+    - ansible
+    - terraform
+    - docker
     code: "github.com/stillinbeta/do-mastodon"
     site: null
+  - name: "pleasecaption"
+    description: "A (defunct) bot that reminds you to add alt-text to images"
+    technologies:
+    - haskell
+    - conduit
+    code: "github.com/stillinbeta/pleasecaption"
+    site: "twitter.com/pleasecaption"
   '/resume': 'https://static.stillinbeta.com/lizfrost-resume.pdf'
 
   
