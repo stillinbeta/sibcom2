@@ -19,8 +19,10 @@ pages:
       github: "github.com/stillinbeta"
       mastodon: "gayhorse.club/@beta"
       linkedin: "linkedin.com/in/stillinbeta"
-    contact:
+    messaging:
       email: "liz @ [ siβ ] dot com"
+      telegram: 'telegram.me/stillinbeta'
+      discord: "stillinbeta#6283"
   '/talks':
   - name: "Kubernetes from a Cake Mix" 
     conference: "SRECon North American 2019"

@@ -109,9 +109,9 @@ impl BMONHandler {
         };
 
         Value::Object(vec![
-            (Value::String("location".into()), location),
             (Value::String("toot".into()), mastodon),
-            (Value::String("commit".into()), github),
+            (Value::String("location".into()), location),
+            (Value::String("push".into()), github),
         ])
     }
 }
