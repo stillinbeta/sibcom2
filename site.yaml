@@ -88,6 +88,8 @@ pages:
     - "weaveworks flux"
     - "heptio contour"
     - "bitnami sealed secret"
+    code: "github.com/stillinbeta/leckie"
+    site: null
   - name: "Zeerust"
     description: "A Z80 emulator written in Rust"
     technologies:
