@@ -6,7 +6,7 @@ pages:
       - rust
       - ponies
       - girls
-    at: recurse.com
+    at: vmware.com
   '/contact':
     name: "Liz Frost"
     also_known_as:
