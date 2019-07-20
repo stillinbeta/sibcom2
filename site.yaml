@@ -24,6 +24,11 @@ pages:
       telegram: 'telegram.me/stillinbeta'
       discord: "stillinbeta#6283"
   '/talks':
+  - name: "EZ-Rust: Z80 for the web"
+    conference: "Brooklyn JS July 2019"
+    recording: null
+    slides: "slideshare.net/ElizabethFrost4/ezrust-z80-for-the-web"
+    repository: "github.com/stillinbeta/ezeerust"
   - name: "Kubernetes from a Cake Mix" 
     conference: "SRECon North American 2019"
     recording: null
