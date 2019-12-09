@@ -6,7 +6,7 @@ pages:
       - rust
       - ponies
       - girls
-    at: vmware.com
+    for_hire: "yes"
   '/contact':
     name: "Liz Frost"
     also_known_as:
