@@ -6,7 +6,7 @@ pages:
       - rust
       - ponies
       - girls
-    for_hire: "yes"
+    works_for: "buzzfeed.com"
   '/contact':
     name: "Liz Frost"
     also_known_as:
