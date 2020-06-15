@@ -65,6 +65,12 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "yooper"
+    description: "UPnP library and CLI"
+    technologies:
+    - rust
+    code: git.sr.ht/~liz/yooper
+    site: crates.io/crates/yooper
   - name: "ezeerust"
     description: "wasm frontend for Zeerust z80 emulator"
     technologies:
