@@ -65,6 +65,13 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "useless"
+    description: "A useless machine in git repo form"
+    technologies:
+    - python
+    - "AWS Lambda"
+    code: "git.sr.ht/~liz/useless"
+    site: "github.com/useless-repo/switch"
   - name: "yooper"
     description: "UPnP library and CLI"
     technologies:
