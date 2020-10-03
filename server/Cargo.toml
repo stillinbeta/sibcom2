@@ -9,4 +9,4 @@ build = "build.rs"
 [dependencies]
 generator = { path = "../generator" }
 bmon = { path = "../bmon" }
-rocket = "0.4.2"
+rocket = "0.4.5"
