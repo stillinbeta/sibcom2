@@ -10,3 +10,4 @@ build = "build.rs"
 generator = { path = "../generator" }
 bmon = { path = "../bmon" }
 fastly = "0.7"
+headers= "0.3.4"

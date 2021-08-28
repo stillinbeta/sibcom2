@@ -2,8 +2,10 @@ use std::str::FromStr;
 
 use bmon::html;
 use bmon::Value;
-use fastly::http::{header::ACCEPT, StatusCode};
+use fastly::http::header::{ACCEPT, COOKIE};
+use fastly::http::StatusCode;
 use fastly::{mime, Request, Response};
+use headers::{Cookie, Header};
 
 // fn get_latest(&self, client: &updater::Client) -> Value {
 //     let mastodon = match client.get_mastodon() {
@@ -64,7 +66,6 @@ fn send_value(req: &Request, value: &Value, title: &str) -> Response {
             });
     }
 
-    let theme = html::Theme::SolarizedDark;
     // get_cookie(req.headers())
     //     .and_then(|c| )
     // req.headers().get(COOKIE)
@@ -73,6 +74,11 @@ fn send_value(req: &Request, value: &Value, title: &str) -> Response {
     // .get("theme")
     // .and_then(|t| FromStr::from_str(t.value()).ok())
     // .unwrap_or(html::Theme::SolarizedDark);
+
+    let theme = Cookie::decode(&mut req.get_header(COOKIE).into_iter())
+        .ok()
+        .and_then(|c| c.get("theme").and_then(|v| html::Theme::from_str(v).ok()))
+        .unwrap_or(html::Theme::SolarizedDark);
 
     Response::new()
         .with_status(StatusCode::OK)
