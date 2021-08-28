@@ -6,7 +6,7 @@ use std::str::FromStr;
 
 use minify::{minify_css, minify_js};
 
-pub(crate) enum Theme {
+pub enum Theme {
     SolarizedDark,
     SolarizedLight,
     Terminal,
@@ -151,6 +151,6 @@ impl Value {
     }
 }
 
-pub(crate) fn render_page(title: &str, theme: Theme, value: &Value) -> String {
+pub fn render_page(title: &str, theme: Theme, value: &Value) -> String {
     html_page!(title, theme, value.to_html())
 }

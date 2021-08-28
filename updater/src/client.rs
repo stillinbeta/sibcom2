@@ -9,38 +9,41 @@ use crate::Error;
 use redis::Commands;
 
 #[derive(Clone, Debug)]
-pub struct Client {
-    redis: redis::Client,
-    namespace: String,
-}
+pub struct Client;
 
-impl Client {
-    pub fn new(redis_url: &str, namespace: String) -> Self {
-        Self {
-            redis: redis::Client::open(redis_url).expect("failed to connect"),
-            namespace,
-        }
-    }
+// #[derive(Clone, Debug)]
+// pub struct Client {
+//     redis: redis::Client,
+//     namespace: String,
+// }
 
-    fn get<T>(&self, name: &'static str) -> Result<T, Error>
-    where
-        T: serde::de::DeserializeOwned + Clone,
-    {
-        let key: String = format!("{}::{}", self.namespace, name);
-        let response: String = self.redis.get_connection()?.get(key)?;
-        let status: T = serde_json::from_str(&response)?;
-        Ok(status.clone())
-    }
+// impl Client {
+//     pub fn new(redis_url: &str, namespace: String) -> Self {
+//         Self {
+//             redis: redis::Client::open(redis_url).expect("failed to connect"),
+//             namespace,
+//         }
+//     }
 
-    pub fn get_mastodon(&self) -> Result<Status, Error> {
-        self.get("mastodon")
-    }
+//     fn get<T>(&self, name: &'static str) -> Result<T, Error>
+//     where
+//         T: serde::de::DeserializeOwned + Clone,
+//     {
+//         let key: String = format!("{}::{}", self.namespace, name);
+//         let response: String = self.redis.get_connection()?.get(key)?;
+//         let status: T = serde_json::from_str(&response)?;
+//         Ok(status.clone())
+//     }
 
-    pub fn get_commit(&self) -> Result<Node, Error> {
-        self.get("github")
-    }
+//     pub fn get_mastodon(&self) -> Result<Status, Error> {
+//         self.get("mastodon")
+//     }
 
-    pub fn get_location(&self) -> Result<Position, Error> {
-        self.get("location")
-    }
-}
+//     pub fn get_commit(&self) -> Result<Node, Error> {
+//         self.get("github")
+//     }
+
+//     pub fn get_location(&self) -> Result<Position, Error> {
+//         self.get("location")
+//     }
+// }

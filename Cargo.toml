@@ -4,6 +4,6 @@ members = [
         "server",
         "generator",
         "bmon",
-        "updater",
+#         "updater",
         "minify",
 ]

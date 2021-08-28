@@ -1,18 +1,15 @@
-#![feature(proc_macro_hygiene)]
 extern crate htmlescape;
 extern crate proc_macro2;
 extern crate quote;
-extern crate rocket;
 extern crate serde;
 extern crate serde_yaml;
 
-mod handler;
-mod html;
+mod cookies;
+pub mod html;
 
-pub use handler::BMONHandler;
 use quote::quote;
-use rocket::http::uri::Uri;
 use serde::ser::{SerializeMap, SerializeSeq};
+use url::Url;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Value {
@@ -29,6 +26,13 @@ impl From<&str> for Value {
     fn from(source: &str) -> Self {
         Value::String(String::from(source))
     }
+}
+
+pub struct Page {
+    pub path: &'static str,
+    pub root: Value,
+    pub nav: Value,
+    pub title: &'static str,
 }
 
 impl quote::ToTokens for Value {
@@ -103,12 +107,12 @@ impl From<serde_yaml::Value> for Value {
             }
             serde_yaml::Value::String(s) => {
                 if s.starts_with('/') {
-                    let _ = Uri::parse(&s).expect("invalid relative URL");
+                    let _ = Url::parse(&s).expect("invalid relative URL");
                     Value::Link(s.clone(), s)
                 // If it has a space, it's not a url
                 } else if (s.contains('/') || s.contains('.')) && !s.contains(' ') {
                     let uri = format!("https://{}", s);
-                    let _ = Uri::parse(&uri).expect("invalid absolute URL");
+                    let _ = Url::parse(&uri).expect("invalid absolute URL");
                     Value::Link(uri, s)
                 } else {
                     Value::String(s)
