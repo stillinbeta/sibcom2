@@ -15,7 +15,7 @@ release:
 docker-login:
 	echo $$DOCKER_PASSWORD | docker login -u stillinbeta --password-stdin
 
-docker-build: release
+docker-build:
 	docker build -t sibcom2 .
 
 docker-push: docker-build

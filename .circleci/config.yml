@@ -20,9 +20,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Build release package"
-          command: cargo build --release
-      - run:
           name: "install docker"
           command: |
             set -x
