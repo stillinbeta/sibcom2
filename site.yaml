@@ -1,11 +1,12 @@
 pages:
   '/hello':
     name: "Liz Frost"
-    occupation: "Infrastructure Engineer"
+    occupation: "Infrastructure Engineer*"
     likes:
       - rust
       - ponies
       - girls
+    '*': "not accredited by Engineers Canada"
     works_for: "buzzfeed.com"
   '/contact':
     name: "Liz Frost"
