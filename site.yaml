@@ -15,21 +15,22 @@ pages:
       - Izzy
       - Elizabeth
     social:
-      twitter: "twitter.com/stillinbeta"
-      github: "github.com/stillinbeta"
+      cohost: "cohost.org/stillinbeta"
       mastodon: "gayhorse.club/@beta"
+      github: "github.com/stillinbeta"
+      sourcehut: "git.sr.ht/~liz"
       linkedin: "linkedin.com/in/stillinbeta"
     messaging:
       email: "liz @ [ siβ ] dot com"
       telegram: 'telegram.me/stillinbeta'
-      discord: "stillinbeta#6283"
+      discord: "stillinbeta#1312"
   '/talks':
   - name: "EZ-Rust: Z80 for the web"
     conference: "Brooklyn JS July 2019"
     recording: null
     slides: "slideshare.net/ElizabethFrost4/ezrust-z80-for-the-web"
     repository: "github.com/stillinbeta/ezeerust"
-  - name: "Kubernetes from a Cake Mix" 
+  - name: "Kubernetes from a Cake Mix"
     conference: "SRECon North American 2019"
     recording: null
     slides: "slideshare.net/ElizabethFrost4/kubernetes-from-a-box-mix"
@@ -126,7 +127,7 @@ pages:
     technologies:
       - rust
       - postgres
-    code: "github.com/bluejekyll/pg-extend-rs/blob/master/pg-extend/src/pg_fdw.rs" 
+    code: "github.com/bluejekyll/pg-extend-rs/blob/master/pg-extend/src/pg_fdw.rs"
     site: null
   - name: "do-mastodon"
     description: "A set of terraform an ansible scripts for running Mastodon on a Digital Ocean droplet"
@@ -144,5 +145,3 @@ pages:
     code: "github.com/stillinbeta/pleasecaption"
     site: "twitter.com/pleasecaption"
   '/resume': 'https://static.stillinbeta.com/lizfrost-resume.pdf'
-
-  
