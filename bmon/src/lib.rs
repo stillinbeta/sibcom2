@@ -1,4 +1,3 @@
-#![feature(proc_macro_hygiene)]
 extern crate htmlescape;
 extern crate proc_macro2;
 extern crate quote;
@@ -11,7 +10,7 @@ mod html;
 
 pub use handler::BMONHandler;
 use quote::quote;
-use rocket::http::uri::Uri;
+use rocket::http::uri::{Reference, Uri};
 use serde::ser::{SerializeMap, SerializeSeq};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -103,12 +102,12 @@ impl From<serde_yaml::Value> for Value {
             }
             serde_yaml::Value::String(s) => {
                 if s.starts_with('/') {
-                    let _ = Uri::parse(&s).expect("invalid relative URL");
+                    let _ = Uri::parse::<Reference>(&s).expect("invalid relative URL");
                     Value::Link(s.clone(), s)
                 // If it has a space, it's not a url
                 } else if (s.contains('/') || s.contains('.')) && !s.contains(' ') {
                     let uri = format!("https://{}", s);
-                    let _ = Uri::parse(&uri).expect("invalid absolute URL");
+                    let _ = Uri::parse::<Reference>(&uri).expect("invalid absolute URL");
                     Value::Link(uri, s)
                 } else {
                     Value::String(s)

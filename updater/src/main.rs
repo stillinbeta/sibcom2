@@ -22,9 +22,6 @@ fn default_namespace() -> String {
 struct Config {
     redis_url: String,
 
-    google_cookie: String,
-    mapquest_token: String,
-
     github_api_token: String,
 
     #[serde(default = "default_namespace")]
@@ -41,11 +38,6 @@ fn main() {
     let root = slog::Logger::root(slog_term::FullFormat::new(plain).build().fuse(), o!());
 
     let updaters: Vec<Box<dyn Updater>> = vec![
-        Box::new(updater::Location::new(
-            &root,
-            &cfg.google_cookie,
-            &cfg.mapquest_token,
-        )),
         Box::new(updater::Github::new(&root, &cfg.github_api_token)),
         Box::new(updater::Mastodon::new(&root)),
     ];

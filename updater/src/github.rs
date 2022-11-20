@@ -29,7 +29,7 @@ impl<'a> crate::Updater for Github<'a> {
     }
 
     fn new_value(&mut self) -> Result<String, crate::Error> {
-        let client = reqwest::Client::new();
+        let client = reqwest::blocking::Client::new();
         let mut responses: Vec<Event> = client
             .get(Self::PUBLIC_EVENTS_URL)
             .header("accept", "application/json")
@@ -50,7 +50,7 @@ impl<'a> crate::Updater for Github<'a> {
 
         debug!(self.log, "got event"; "event" => ?event, "commit" => ?commit);
         Ok(serde_json::to_string(&Node {
-            commit: commit,
+            commit,
             repository: event.repo,
         })?)
     }

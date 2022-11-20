@@ -1,5 +1,4 @@
 extern crate dissolve;
-extern crate itertools;
 extern crate mammut;
 extern crate serde;
 

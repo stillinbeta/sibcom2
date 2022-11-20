@@ -1,6 +1,4 @@
-extern crate locationsharing;
 extern crate mammut;
-extern crate mapquest;
 extern crate redis;
 extern crate reqwest;
 extern crate serde_json;
@@ -9,29 +7,19 @@ extern crate slog;
 
 mod client;
 pub mod github;
-pub mod location;
 pub mod mastodon;
 
 pub use client::Client;
 pub use github::Github;
-pub use location::Location;
 pub use mastodon::Mastodon;
 
 #[derive(Debug)]
 pub enum Error {
     OtherError(String),
-    LocationSharingError(locationsharing::error::Error),
-    MapquestError(mapquest::Error),
     ReqwestError(reqwest::Error),
     SerdeJSONError(serde_json::Error),
     MammutError(mammut::Error),
     RedisError(redis::RedisError),
-}
-
-impl From<locationsharing::error::Error> for Error {
-    fn from(source: locationsharing::error::Error) -> Self {
-        Error::LocationSharingError(source)
-    }
 }
 
 impl From<&str> for Error {
@@ -43,12 +31,6 @@ impl From<&str> for Error {
 impl From<String> for Error {
     fn from(source: String) -> Self {
         Error::OtherError(source)
-    }
-}
-
-impl From<mapquest::Error> for Error {
-    fn from(source: mapquest::Error) -> Self {
-        Error::MapquestError(source)
     }
 }
 

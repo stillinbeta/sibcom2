@@ -3,7 +3,6 @@ extern crate serde;
 extern crate serde_json;
 
 use crate::github::Node;
-use crate::location::Position;
 use crate::mastodon::Status;
 use crate::Error;
 use redis::Commands;
@@ -38,9 +37,5 @@ impl Client {
 
     pub fn get_commit(&self) -> Result<Node, Error> {
         self.get("github")
-    }
-
-    pub fn get_location(&self) -> Result<Position, Error> {
-        self.get("location")
     }
 }

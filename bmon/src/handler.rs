@@ -1,10 +1,11 @@
 extern crate updater;
 
-use rocket::handler::{Handler, Outcome};
 use rocket::http::{Accept, ContentType, Status};
-use rocket::response::Redirect;
-use rocket::{Data, Request, Response};
-use rocket_contrib::json::Json;
+use rocket::response::{Redirect, Response};
+use rocket::route::Handler;
+use rocket::route::Outcome;
+use rocket::serde::json::Json;
+use rocket::{Data, Request};
 use std::io::Cursor;
 use std::str::FromStr;
 
@@ -28,7 +29,7 @@ impl BMONHandler {
         match body {
             Value::Link(_, s) => Self {
                 body: PageValue::Redirect(s),
-                title: title,
+                title,
             },
             _ if title == "hello" => {
                 let redis_url = std::env::var("REDIS_URL").expect("REDIS_URL unset");
@@ -39,12 +40,12 @@ impl BMONHandler {
                         nav,
                         updater::Client::new(&redis_url, redis_namespace),
                     ),
-                    title: title,
+                    title,
                 }
             }
             _ => Self {
                 body: PageValue::Body(Self::make_page_with_nav(body, nav, title.into())),
-                title: title,
+                title,
             },
         }
     }
@@ -68,8 +69,9 @@ impl BMONHandler {
                     .unwrap_or(html::Theme::SolarizedDark);
                 response.set_status(Status::Ok);
                 response.set_header(ContentType::HTML);
-                response.set_sized_body(Cursor::new(html::render_page(self.title, theme, value)));
-                Outcome::from(req, response)
+                response
+                    .set_streamed_body(Cursor::new(html::render_page(self.title, theme, value)));
+                Outcome::Success(response)
             }
         }
     }
@@ -100,24 +102,16 @@ impl BMONHandler {
             }
         };
 
-        let location = match client.get_location() {
-            Ok(location) => Value::String(location.position),
-            Err(err) => {
-                eprintln!("Github error: {:?}", err);
-                Value::String("unknown".into())
-            }
-        };
-
         Value::Object(vec![
             (Value::String("toot".into()), mastodon),
-            (Value::String("location".into()), location),
             (Value::String("push".into()), github),
         ])
     }
 }
 
+#[rocket::async_trait]
 impl Handler for BMONHandler {
-    fn handle<'r>(&self, req: &'r Request, _data: Data) -> Outcome<'r> {
+    async fn handle<'r>(&self, req: &'r Request<'_>, _data: Data<'r>) -> Outcome<'r> {
         match &self.body {
             PageValue::Redirect(r) => Outcome::from(req, Redirect::to(r.clone())), // TODO can we eliminate this clone?
             PageValue::Body(body) => self.send_value(req, body),
