@@ -41,6 +41,6 @@ impl Client {
     }
 
     pub fn get_chost(&self) -> Result<Chost, Error> {
-        self.get("chost")
+        self.get("cohost")
     }
 }
