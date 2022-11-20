@@ -3,11 +3,13 @@ extern crate serde;
 extern crate serde_json;
 extern crate slog;
 
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
+
+use crate::Error;
 
 pub struct Github<'a> {
     log: &'a slog::Logger,
-    github_api_token: &'a str,
 }
 
 impl<'a> Github<'a> {
@@ -15,11 +17,8 @@ impl<'a> Github<'a> {
         "https://api.github.com/users/stillinbeta/events/public";
     const EVENT_NAME: &'static str = "PushEvent";
 
-    pub fn new(log: &'a slog::Logger, github_api_token: &'a str) -> Self {
-        Self {
-            log,
-            github_api_token,
-        }
+    pub fn new(log: &'a slog::Logger) -> Self {
+        Self { log }
     }
 }
 
@@ -29,18 +28,30 @@ impl<'a> crate::Updater for Github<'a> {
     }
 
     fn new_value(&mut self) -> Result<String, crate::Error> {
-        let client = reqwest::blocking::Client::new();
-        let mut responses: Vec<Event> = client
+        let client = reqwest::blocking::Client::builder()
+            .user_agent(concat!(
+                env!("CARGO_PKG_NAME"),
+                "/",
+                env!("CARGO_PKG_VERSION")
+            ))
+            .build()?;
+
+        let response = client
             .get(Self::PUBLIC_EVENTS_URL)
             .header("accept", "application/json")
-            .header("authorization", format!("bearer {}", self.github_api_token))
-            .send()?
-            .error_for_status()?
-            .json()?;
+            .send()?;
 
-        responses.reverse();
+        if response.status() != StatusCode::OK {
+            let code = response.status();
+            error!(self.log, "bad status"; "code" => ?code, "response" => ?response.bytes());
+            return Err(Error::OtherError("failed to github".to_string()));
+        }
 
-        let mut responses: Vec<Event> = responses
+        let mut json: Vec<Event> = response.error_for_status()?.json()?;
+
+        json.reverse();
+
+        let mut responses: Vec<Event> = json
             .into_iter()
             .filter(|e| e.event_type == Self::EVENT_NAME)
             .collect();

@@ -6,10 +6,12 @@ extern crate serde_json;
 extern crate slog;
 
 mod client;
+mod cohost;
 pub mod github;
 pub mod mastodon;
 
 pub use client::Client;
+pub use cohost::Cohost;
 pub use github::Github;
 pub use mastodon::Mastodon;
 
@@ -20,6 +22,7 @@ pub enum Error {
     SerdeJSONError(serde_json::Error),
     MammutError(mammut::Error),
     RedisError(redis::RedisError),
+    RSSError(rss::Error),
 }
 
 impl From<&str> for Error {
@@ -55,6 +58,12 @@ impl From<mammut::Error> for Error {
 impl From<redis::RedisError> for Error {
     fn from(source: redis::RedisError) -> Self {
         Error::RedisError(source)
+    }
+}
+
+impl From<rss::Error> for Error {
+    fn from(source: rss::Error) -> Self {
+        Error::RSSError(source)
     }
 }
 

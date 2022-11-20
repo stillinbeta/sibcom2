@@ -22,8 +22,6 @@ fn default_namespace() -> String {
 struct Config {
     redis_url: String,
 
-    github_api_token: String,
-
     #[serde(default = "default_namespace")]
     redis_namespace: String,
 }
@@ -38,8 +36,9 @@ fn main() {
     let root = slog::Logger::root(slog_term::FullFormat::new(plain).build().fuse(), o!());
 
     let updaters: Vec<Box<dyn Updater>> = vec![
-        Box::new(updater::Github::new(&root, &cfg.github_api_token)),
+        Box::new(updater::Github::new(&root)),
         Box::new(updater::Mastodon::new(&root)),
+        Box::new(updater::Cohost::new(&root)),
     ];
 
     for mut updater in updaters {
@@ -51,7 +50,7 @@ fn main() {
                 match conn.set(format!("{}::{}", cfg.redis_namespace, updater.name()), &val) {
                     Err(e) => {
                         crit!(root, "redis_error"; "url" => &cfg.redis_url, "updater" => updater.name(), "err" => e.to_string());
-                        panic!(e)
+                        panic!("{}", e)
                     }
                     Ok(()) => {
                         info!(root, "updated status"; "updater" => updater.name(), "value" => &val)
