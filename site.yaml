@@ -7,7 +7,7 @@ pages:
       - ponies
       - girls
     '*': "not accredited by Engineers Canada"
-    works_for: "buzzfeed.com"
+    hire_me: true
   '/contact':
     name: "Liz Frost"
     also_known_as:
