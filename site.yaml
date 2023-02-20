@@ -67,6 +67,13 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "beats"
+    description: "A custom watchface for my Garmin Vivoactive 3"
+    technologies:
+    - "Monkey C"
+    - "ConnectIQ"
+    code: "git.sr.ht/~liz/beats"
+    site: null
   - name: "useless"
     description: "A useless machine in git repo form"
     technologies:
