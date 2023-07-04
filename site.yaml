@@ -7,7 +7,7 @@ pages:
       - ponies
       - girls
     '*': "not accredited by Engineers Canada"
-    hire_me: true
+    hire_me: false
   '/contact':
     name: "Liz Frost"
     also_known_as:
@@ -24,7 +24,7 @@ pages:
     messaging:
       email: "liz @ [ siβ ] dot com"
       telegram: 'telegram.me/stillinbeta'
-      discord: "stillinbeta#1312"
+      discord: "@stillinbeta"
   '/talks':
   - name: "EZ-Rust: Z80 for the web"
     conference: "Brooklyn JS July 2019"
