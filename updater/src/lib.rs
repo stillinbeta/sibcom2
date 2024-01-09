@@ -2,11 +2,13 @@ mod client;
 mod cohost;
 pub mod github;
 pub mod mastodon;
+pub mod blog;
 
 pub use client::Client;
 pub use cohost::Cohost;
 pub use github::Github;
 pub use mastodon::Mastodon;
+pub use blog::Blog;
 
 #[derive(Debug)]
 pub enum Error {
