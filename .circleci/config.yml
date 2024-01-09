@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-    - image: rust:1.65
+    - image: rust:1.75
     steps:
       - checkout
       - run:
@@ -16,7 +16,7 @@ jobs:
           command: cargo test --verbose
   build:
     docker:
-    - image: rust:1.65
+    - image: rust:1.75
     steps:
       - checkout
       - run:
