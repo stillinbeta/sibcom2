@@ -31,11 +31,13 @@ pub fn minify_js(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
 fn load_file(ts: proc_macro2::TokenStream) -> String {
     let lit: syn::LitStr = syn::parse2(ts).expect("expected string literal");
-    let mut file = File::open(lit.value()).unwrap_or_else(|_| panic!(
-        "failed to open file {:?} in {:?}",
-        lit.value(),
-        std::env::current_dir(),
-    ));
+    let mut file = File::open(lit.value()).unwrap_or_else(|_| {
+        panic!(
+            "failed to open file {:?} in {:?}",
+            lit.value(),
+            std::env::current_dir(),
+        )
+    });
     let mut buf = String::new();
     file.read_to_string(&mut buf).expect("failed to read file");
     buf

@@ -1,9 +1,9 @@
 use anyhow::Result;
-use std::ops::Deref;
+use rss::{Channel, Item};
 use scraper::Node;
 use serde::{Deserialize, Serialize};
-use rss::{Channel, Item};
 use slog::debug;
+use std::ops::Deref;
 
 pub struct Mastodon<'a> {
     log: &'a slog::Logger,
@@ -56,9 +56,6 @@ impl<'a> crate::Updater for Mastodon<'a> {
 
         debug!(self.log, "retrieved toot"; "title" => &message, "url" => &url);
 
-        Ok(serde_json::to_string(&Status {
-            message,
-            url,
-        })?)
+        Ok(serde_json::to_string(&Status { message, url })?)
     }
 }

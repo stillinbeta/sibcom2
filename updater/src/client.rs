@@ -1,8 +1,8 @@
-use anyhow::Result;
+use crate::blog::Post;
 use crate::cohost::Chost;
 use crate::github::Node;
 use crate::mastodon::Status;
-use crate::blog::Post;
+use anyhow::Result;
 use redis::Commands;
 
 #[derive(Clone, Debug)]

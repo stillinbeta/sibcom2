@@ -1,7 +1,7 @@
-use anyhow::{Result, anyhow};
-use slog::{error, debug};
+use anyhow::{anyhow, Result};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
+use slog::{debug, error};
 
 pub struct Github<'a> {
     log: &'a slog::Logger,
@@ -52,7 +52,11 @@ impl<'a> crate::Updater for Github<'a> {
             .collect();
 
         let mut event = responses.pop().ok_or(anyhow!("No events found"))?;
-        let commit = event.payload.commits.pop().ok_or(anyhow!("No commits found"))?;
+        let commit = event
+            .payload
+            .commits
+            .pop()
+            .ok_or(anyhow!("No commits found"))?;
 
         debug!(self.log, "got event"; "event" => ?event, "commit" => ?commit);
         Ok(serde_json::to_string(&Node {

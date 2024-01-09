@@ -1,8 +1,8 @@
+use anyhow::Result;
 use proc_macro2::TokenStream;
 use serde::Deserialize;
 use std::fs::File;
 use std::io::Read;
-use anyhow::Result;
 
 #[derive(Debug, Deserialize, PartialEq)]
 struct SiteIntermediate {

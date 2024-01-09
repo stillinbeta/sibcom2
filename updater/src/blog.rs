@@ -1,6 +1,6 @@
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
 use rss::{Channel, Item};
+use serde::{Deserialize, Serialize};
 use slog::debug;
 
 pub struct Blog<'a> {
@@ -35,18 +35,13 @@ impl<'a> crate::Updater for Blog<'a> {
             .bytes()?;
 
         let channel = Channel::read_from(&feed[..])?;
-        let Item {
-            title, link, ..
-        } = channel.items.first().unwrap();
+        let Item { title, link, .. } = channel.items.first().unwrap();
 
         let title = title.clone().unwrap();
         let url = link.clone().unwrap();
 
         debug!(self.log, "retrieved blog"; "title" => &title, "url" => &url);
 
-        Ok(serde_json::to_string(&Post {
-            title,
-            url,
-        })?)
+        Ok(serde_json::to_string(&Post { title, url })?)
     }
 }
