@@ -67,6 +67,15 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "den-tv"
+    description: "A display of useful information that runs in our kitchen"
+    technologies:
+    - "rust"
+    - "actix"
+    - "yew"
+    - "websockets"
+    code: "git.sr.ht/~liz/den-tv"
+    site: "https://blog.stillinbeta.com/2024-01-01-overengineered-household-display.html"
   - name: "beats"
     description: "A custom watchface for my Garmin Vivoactive 3"
     technologies:
