@@ -1,8 +1,4 @@
-extern crate reqwest;
-extern crate serde;
-extern crate serde_json;
-extern crate slog;
-
+use slog::{error, debug};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 

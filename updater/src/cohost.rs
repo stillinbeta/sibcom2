@@ -1,5 +1,5 @@
+use slog::debug;
 use serde::{Deserialize, Serialize};
-
 use rss::{Channel, Item};
 
 pub struct Cohost<'a> {
