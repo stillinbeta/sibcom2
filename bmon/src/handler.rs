@@ -89,7 +89,7 @@ impl BMONHandler {
             Ok(chost) => Value::Link(chost.url, chost.title),
             // TODO: slog
             Err(err) => {
-                eprintln!("Mastodon error: {:?}", err);
+                eprintln!("Cohost error: {:?}", err);
                 Value::String("unknown".into())
             }
         };

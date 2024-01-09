@@ -7,7 +7,7 @@ pub struct Cohost<'a> {
 }
 
 impl<'a> Cohost<'a> {
-    const USER_RSS_FEED: &'static str = "https://stillinbeta.cohost.org/rss/public";
+    const USER_RSS_FEED: &'static str = "https://cohost.org/stillinbeta/rss/public.atom";
 
     pub fn new(log: &'a slog::Logger) -> Self {
         Self { log }

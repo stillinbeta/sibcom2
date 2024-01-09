@@ -3,18 +3,18 @@ name = "bmon"
 description = "Beta's Magical Object Notation"
 version = "0.1.0"
 authors = ["Ellie Frost <web@stillinbeta.com>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 doctest = false
 
 [dependencies]
-quote = "0.6.1"
+quote = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 # rocket_contrib = { version = "0.4", default-features = false, features = ["json"] }
 htmlescape = "0.3"
-proc-macro2 = "0.4"
+proc-macro2 = "1.0"
 serde_yaml = "0.8"
 updater = { path = "../updater" }
 minify = { path = "../minify" }

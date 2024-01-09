@@ -2,16 +2,16 @@
 name = "generator"
 version = "0.1.0"
 authors = ["Ellie Frost <web@stillinbeta.com>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 proc-macro = true
 
 [dependencies]
-quote = "0.6.1"
+quote = "1.0"
 serde_yaml = "0.8"
 serde-tuple-vec-map = "0.2.1"
 serde = { version = "1.0", features = ["derive"] }
-proc-macro2 = "0.4"
+proc-macro2 = "1.0"
 bmon = { path = "../bmon" }
-syn = { version = "0.15.29", features = ["parsing"] }
+syn = { version = "2.0", features = ["parsing"] }

@@ -1,7 +1,6 @@
-extern crate bmon;
-extern crate generator;
-
 use rocket::{get, launch, routes, Config};
+
+use generator::yaml_routes;
 
 #[get("/")]
 fn root() -> rocket::response::Redirect {
@@ -20,6 +19,6 @@ fn setup() -> _ {
 
     rocket::build()
         .configure(cfg)
-        .mount("/", generator::yaml_routes!("site.yaml"))
+        .mount("/", yaml_routes!("site.yaml"))
         .mount("/", routes!(root))
 }

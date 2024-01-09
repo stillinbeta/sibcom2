@@ -1,9 +1,3 @@
-extern crate bmon;
-extern crate proc_macro2;
-extern crate quote;
-extern crate serde_yaml;
-extern crate syn;
-
 use crate::error::Error;
 use proc_macro2::TokenStream;
 use serde::Deserialize;

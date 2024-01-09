@@ -1,7 +1,3 @@
-extern crate dissolve;
-extern crate mammut;
-extern crate serde;
-
 use serde::{Deserialize, Serialize};
 
 pub struct Mastodon<'a> {
@@ -48,7 +44,7 @@ impl<'a> crate::Updater for Mastodon<'a> {
             .next()
             .ok_or::<crate::Error>("No statuses".into())?;
 
-        let message = itertools::join(dissolve::strip_html_tags(&status.content), " ");
+        let message = itertools::join(dissolve::strip_html_tags(dbg!(&status.content)), " ");
 
         debug!(self.log, "retrieved status"; "message" => &message, "status" => ?status);
 
