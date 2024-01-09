@@ -1,4 +1,4 @@
-FROM rust:1.65-alpine3.16 as builder
+FROM rust:1.75-alpine as builder
 RUN mkdir /build
 RUN apk add pkgconfig openssl openssl-dev musl-dev
 COPY assets /build/assets
