@@ -85,6 +85,14 @@ impl BMONHandler {
                 Value::String("unknown".into())
             }
         };
+        let blog = match client.get_blog() {
+            Ok(post) => Value::Link(post.url, post.title),
+            Err(err) => {
+                eprintln!("Blog error: {:?}", err);
+                Value::String("unknown".into())
+            }
+        };
+
         let chost = match client.get_chost() {
             Ok(chost) => Value::Link(chost.url, chost.title),
             // TODO: slog
@@ -111,6 +119,7 @@ impl BMONHandler {
         };
 
         Value::Object(vec![
+            (Value::String("blog-post".into()), blog),
             (Value::String("toot".into()), mastodon),
             (Value::String("chost".into()), chost),
             (Value::String("push".into()), github),

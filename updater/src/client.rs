@@ -1,10 +1,7 @@
-extern crate redis;
-extern crate serde;
-extern crate serde_json;
-
 use crate::cohost::Chost;
 use crate::github::Node;
 use crate::mastodon::Status;
+use crate::blog::Post;
 use crate::Error;
 use redis::Commands;
 
@@ -42,5 +39,9 @@ impl Client {
 
     pub fn get_chost(&self) -> Result<Chost, Error> {
         self.get("cohost")
+    }
+
+    pub fn get_blog(&self) -> Result<Post, Error> {
+        self.get("blog")
     }
 }
