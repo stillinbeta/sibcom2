@@ -1,8 +1,7 @@
+use anyhow::Result;
 use std::ops::Deref;
-
 use scraper::Node;
 use serde::{Deserialize, Serialize};
-
 use rss::{Channel, Item};
 use slog::debug;
 
@@ -29,7 +28,7 @@ impl<'a> crate::Updater for Mastodon<'a> {
         "mastodon"
     }
 
-    fn new_value(&mut self) -> Result<String, crate::Error> {
+    fn new_value(&mut self) -> Result<String> {
         let client = reqwest::blocking::Client::new();
         let feed = client
             .get(Self::USER_RSS_FEED)

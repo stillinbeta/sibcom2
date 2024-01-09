@@ -53,7 +53,7 @@ impl BMONHandler {
     fn make_page_with_nav(body: Value, nav: Value, title: String) -> Value {
         Value::Object(vec![
             (Value::String("nav".into()), nav),
-            (Value::String(title.into()), body),
+            (Value::String(title), body),
         ])
     }
 
@@ -149,7 +149,7 @@ impl Handler for BMONHandler {
                 }
                 _ => {
                     eprintln!("Homepage not a string!");
-                    self.send_value(req, &body)
+                    self.send_value(req, body)
                 }
             },
         }

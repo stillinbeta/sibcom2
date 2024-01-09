@@ -5,6 +5,7 @@ authors = ["Ellie Frost <web@stillinbeta.com>"]
 edition = "2021"
 
 [dependencies]
+anyhow = "1.0"
 redis = "0.24"
 envy = "0.4"
 slog = "2.4.1"

@@ -1,3 +1,4 @@
+use anyhow::Result;
 use rss::{Channel, Item};
 use serde::{Deserialize, Serialize};
 use slog::debug;
@@ -26,7 +27,7 @@ impl<'a> crate::Updater for Cohost<'a> {
         "cohost"
     }
 
-    fn new_value(&mut self) -> Result<String, crate::Error> {
+    fn new_value(&mut self) -> Result<String> {
         let client = reqwest::blocking::Client::new();
         let feed = client
             .get(Self::USER_RSS_FEED)

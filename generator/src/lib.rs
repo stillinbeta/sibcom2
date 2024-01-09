@@ -1,6 +1,5 @@
 extern crate proc_macro;
 
-pub(crate) mod error;
 pub(crate) mod load;
 mod routes;
 

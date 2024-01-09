@@ -1,8 +1,8 @@
+use anyhow::Result;
 use crate::cohost::Chost;
 use crate::github::Node;
 use crate::mastodon::Status;
 use crate::blog::Post;
-use crate::Error;
 use redis::Commands;
 
 #[derive(Clone, Debug)]
@@ -19,7 +19,7 @@ impl Client {
         }
     }
 
-    fn get<T>(&self, name: &'static str) -> Result<T, Error>
+    fn get<T>(&self, name: &'static str) -> Result<T>
     where
         T: serde::de::DeserializeOwned + Clone,
     {
@@ -29,19 +29,19 @@ impl Client {
         Ok(status.clone())
     }
 
-    pub fn get_mastodon(&self) -> Result<Status, Error> {
+    pub fn get_mastodon(&self) -> Result<Status> {
         self.get("mastodon")
     }
 
-    pub fn get_commit(&self) -> Result<Node, Error> {
+    pub fn get_commit(&self) -> Result<Node> {
         self.get("github")
     }
 
-    pub fn get_chost(&self) -> Result<Chost, Error> {
+    pub fn get_chost(&self) -> Result<Chost> {
         self.get("cohost")
     }
 
-    pub fn get_blog(&self) -> Result<Post, Error> {
+    pub fn get_blog(&self) -> Result<Post> {
         self.get("blog")
     }
 }

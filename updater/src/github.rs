@@ -1,8 +1,7 @@
+use anyhow::{Result, anyhow};
 use slog::{error, debug};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
-
-use crate::Error;
 
 pub struct Github<'a> {
     log: &'a slog::Logger,
@@ -23,7 +22,7 @@ impl<'a> crate::Updater for Github<'a> {
         "github"
     }
 
-    fn new_value(&mut self) -> Result<String, crate::Error> {
+    fn new_value(&mut self) -> Result<String> {
         let client = reqwest::blocking::Client::builder()
             .user_agent(concat!(
                 env!("CARGO_PKG_NAME"),
@@ -40,7 +39,7 @@ impl<'a> crate::Updater for Github<'a> {
         if response.status() != StatusCode::OK {
             let code = response.status();
             error!(self.log, "bad status"; "code" => ?code, "response" => ?response.bytes());
-            return Err(Error::OtherError("failed to github".to_string()));
+            return Err(anyhow!("failed to github".to_string()));
         }
 
         let mut json: Vec<Event> = response.error_for_status()?.json()?;
@@ -52,8 +51,8 @@ impl<'a> crate::Updater for Github<'a> {
             .filter(|e| e.event_type == Self::EVENT_NAME)
             .collect();
 
-        let mut event = responses.pop().ok_or("No events found")?;
-        let commit = event.payload.commits.pop().ok_or("No commits found")?;
+        let mut event = responses.pop().ok_or(anyhow!("No events found"))?;
+        let commit = event.payload.commits.pop().ok_or(anyhow!("No commits found"))?;
 
         debug!(self.log, "got event"; "event" => ?event, "commit" => ?commit);
         Ok(serde_json::to_string(&Node {

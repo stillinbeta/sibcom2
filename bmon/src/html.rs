@@ -132,7 +132,7 @@ impl Value {
 
     /// Make rows makes a <div class="row"></div>, but with the commas inside the div
     /// a .join() would put them outside the main
-    fn make_rows<'a, T, F>(rows: &'a [T], f: F) -> String
+    fn make_rows<T, F>(rows: &[T], f: F) -> String
     where
         F: Fn(&T) -> String,
     {

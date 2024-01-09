@@ -1,8 +1,8 @@
-use crate::error::Error;
 use proc_macro2::TokenStream;
 use serde::Deserialize;
 use std::fs::File;
 use std::io::Read;
+use anyhow::Result;
 
 #[derive(Debug, Deserialize, PartialEq)]
 struct SiteIntermediate {
@@ -38,12 +38,12 @@ impl Site {
     }
 }
 
-pub(crate) fn parse_site(site: &str) -> Result<Site, Error> {
+pub(crate) fn parse_site(site: &str) -> Result<Site> {
     let v: SiteIntermediate = serde_yaml::from_str(site)?;
     Ok(v.into())
 }
 
-pub(crate) fn load_file(ts: TokenStream) -> Result<String, Error> {
+pub(crate) fn load_file(ts: TokenStream) -> Result<String> {
     let lit: syn::LitStr = syn::parse2(ts)?;
     let mut file = File::open(lit.value())?;
     let mut buf = String::new();
