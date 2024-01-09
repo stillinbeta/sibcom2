@@ -9,10 +9,10 @@ Built in [Rust] using [Rocket].
 
 ## Architecture
 
-[`site.yaml`](/site.yaml) is parsed and validated at compile time. 
-The [`generator`](/generator) crate parses the yaml, and the [`bmon`](/bmon) crate serializes it back to a Rust AST. 
+[`site.yaml`](/site.yaml) is parsed and validated at compile time.
+The [`generator`](/generator) crate parses the yaml, and the [`bmon`](/bmon) crate serializes it back to a Rust AST.
 The `bmon` crate also has the [handler that turns that AST into HTML or JSON][handler].
-The [`server`](/server) crate only serves the handler. 
+The [`server`](/server) crate only serves the handler.
 
 [archive]: https://web.archive.org/web/20181222124211/http://stillinbeta.com/
 [rust]: https://www.rust-lang.org/
@@ -21,9 +21,9 @@ The [`server`](/server) crate only serves the handler.
 
 ### Dynamic content
 
-Most of the content is static, parsed directly from `site.yaml`. 
+Most of the content is static, parsed directly from `site.yaml`.
 The `latest` section of `/hello` is the only dynamic content.
-It's pulled from a `redis` instance, one key per service. 
+It's pulled from a `redis` instance, one key per service.
 The redis instance is populated by the [`updater`](/updater) crate.
 
 ## Deployment
@@ -31,13 +31,10 @@ The redis instance is populated by the [`updater`](/updater) crate.
 All commits are built and validated by [CircleCI][circleci].
 Commits to master are then built as [docker images](/Dockerfile) and pushed to [docker hub][hub].
 
-The site is deployed to [my kubernetes cluster][leckie].
-[Flux] watches for new docker images, and then automatically [commits] changes to the manifest.
+The site is deployed to my digital ocean droplet.
+I configure it with ansible.
 
 Push to deploy takes about 10 minutes.
 
-[circleci]: https://circleci.com/gh/stillinbeta/puccinia
+[circleci]: https://circleci.com/gh/stillinbeta/sibcom2
 [hub]:https://hub.docker.com/r/stillinbeta/sibcom2
-[leckie]: https://github.com/stillinbeta/leckie
-[Flux]: https://github.com/weaveworks/flux
-[commits]:  https://github.com/stillinbeta/leckie/releases/tag/flux-sync
