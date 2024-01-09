@@ -1,13 +1,14 @@
-use slog::debug;
-use serde::{Deserialize, Serialize};
 use rss::{Channel, Item};
+use serde::{Deserialize, Serialize};
+use slog::debug;
 
 pub struct Cohost<'a> {
     log: &'a slog::Logger,
 }
 
 impl<'a> Cohost<'a> {
-    const USER_RSS_FEED: &'static str = "https://cohost.org/stillinbeta/rss/public.atom";
+    const USER_RSS_FEED: &'static str = "https://cohost.org/stillinbeta/rss/public.rss";
+    const AUTHOR_NAME: &'static str = "@stillinbeta";
 
     pub fn new(log: &'a slog::Logger) -> Self {
         Self { log }
@@ -34,7 +35,15 @@ impl<'a> crate::Updater for Cohost<'a> {
             .bytes()?;
 
         let channel = Channel::read_from(&feed[..])?;
-        let Item { title, link, .. } = channel.items.first().unwrap();
+        let Item { title, link, .. } = channel
+            .items
+            .into_iter()
+            // find one we wrote
+            .find(|v| match &v.author {
+                Some(v) => v.contains(Self::AUTHOR_NAME),
+                None => false,
+            })
+            .unwrap();
 
         let title = title.clone().unwrap_or("this one".into());
         let url = link.clone().unwrap();
