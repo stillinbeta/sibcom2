@@ -1,10 +1,3 @@
-extern crate mammut;
-extern crate redis;
-extern crate reqwest;
-extern crate serde_json;
-#[macro_use]
-extern crate slog;
-
 mod client;
 mod cohost;
 pub mod github;
@@ -20,7 +13,6 @@ pub enum Error {
     OtherError(String),
     ReqwestError(reqwest::Error),
     SerdeJSONError(serde_json::Error),
-    MammutError(mammut::Error),
     RedisError(redis::RedisError),
     RSSError(rss::Error),
 }
@@ -46,12 +38,6 @@ impl From<reqwest::Error> for Error {
 impl From<serde_json::Error> for Error {
     fn from(source: serde_json::Error) -> Self {
         Error::SerdeJSONError(source)
-    }
-}
-
-impl From<mammut::Error> for Error {
-    fn from(source: mammut::Error) -> Self {
-        Error::MammutError(source)
     }
 }
 

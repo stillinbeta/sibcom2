@@ -1,26 +1,20 @@
+use std::ops::Deref;
+
+use scraper::Node;
 use serde::{Deserialize, Serialize};
+
+use rss::{Channel, Item};
+use slog::debug;
 
 pub struct Mastodon<'a> {
     log: &'a slog::Logger,
-    mastodon: mammut::Mastodon,
 }
 
-const MASTODON_URL: &str = "https://gayhorse.club";
-const USER_ID: &str = "2";
-
 impl<'a> Mastodon<'a> {
+    const USER_RSS_FEED: &'static str = "https://gayhorse.club/@beta.rss";
+
     pub fn new(log: &'a slog::Logger) -> Self {
-        Self {
-            log,
-            mastodon: mammut::Mastodon::from_data(mammut::Data {
-                base: MASTODON_URL.into(),
-                // Our method doesn't require authentication
-                client_id: "".into(),
-                client_secret: "".into(),
-                redirect: "".into(),
-                token: "".into(),
-            }),
-        }
+        Self { log }
     }
 }
 
@@ -36,21 +30,36 @@ impl<'a> crate::Updater for Mastodon<'a> {
     }
 
     fn new_value(&mut self) -> Result<String, crate::Error> {
-        let request = mammut::StatusesRequest::new().limit(1).exclude_replies();
-        let responses = self.mastodon.statuses(USER_ID, request)?;
+        let client = reqwest::blocking::Client::new();
+        let feed = client
+            .get(Self::USER_RSS_FEED)
+            .send()?
+            .error_for_status()?
+            .bytes()?;
 
-        let status = responses
-            .items_iter()
-            .next()
-            .ok_or::<crate::Error>("No statuses".into())?;
+        let channel = Channel::read_from(&feed[..])?;
+        let Item {
+            description, link, ..
+        } = channel.items.first().unwrap();
 
-        let message = itertools::join(dissolve::strip_html_tags(dbg!(&status.content)), " ");
+        let message = description.clone().unwrap_or("this one".into());
 
-        debug!(self.log, "retrieved status"; "message" => &message, "status" => ?status);
+        let message = scraper::Html::parse_fragment(&message)
+            .tree
+            .into_iter()
+            .filter_map(|v| match v {
+                Node::Text(t) => Some(t),
+                _ => None,
+            })
+            .fold(String::new(), |m, v| m + v.deref());
+
+        let url = link.clone().unwrap();
+
+        debug!(self.log, "retrieved toot"; "title" => &message, "url" => &url);
 
         Ok(serde_json::to_string(&Status {
-            message: message,
-            url: status.url.unwrap_or(status.uri),
+            message,
+            url,
         })?)
     }
 }
