@@ -8,7 +8,7 @@ pub struct Cohost<'a> {
 
 #[derive(Deserialize)]
 struct Page {
-    items: Vec<Item>
+    items: Vec<Item>,
 }
 
 #[derive(Deserialize)]
@@ -22,7 +22,6 @@ struct Item {
 struct Author {
     name: String,
 }
-
 
 impl<'a> Cohost<'a> {
     const USER_PAGE_JSON: &'static str = "https://cohost.org/stillinbeta/rss/public.json";
@@ -55,11 +54,14 @@ impl<'a> crate::Updater for Cohost<'a> {
         "cohost"
     }
 
-
     fn new_value(&mut self) -> Result<String> {
         let page = self.get_page()?;
 
-        let Item { title, url, .. } = page.items.into_iter().find(|v| v.author.name == Self::AUTHOR_NAME).unwrap();
+        let Item { title, url, .. } = page
+            .items
+            .into_iter()
+            .find(|v| v.author.name == Self::AUTHOR_NAME)
+            .unwrap();
 
         debug!(self.log, "retrieved chost"; "title" => &title, "url" => &url);
 
