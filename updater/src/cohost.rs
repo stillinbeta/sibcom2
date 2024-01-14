@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use serde::{Deserialize, Serialize};
 use slog::debug;
 
@@ -61,7 +61,7 @@ impl<'a> crate::Updater for Cohost<'a> {
             .items
             .into_iter()
             .find(|v| v.author.name == Self::AUTHOR_NAME)
-            .unwrap();
+            .ok_or(anyhow!("couldn't find any chosts"))?;
 
         debug!(self.log, "retrieved chost"; "title" => &title, "url" => &url);
 

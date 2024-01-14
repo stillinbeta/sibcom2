@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use rss::{Channel, Item};
 use serde::{Deserialize, Serialize};
 use slog::debug;
@@ -35,10 +35,10 @@ impl<'a> crate::Updater for Blog<'a> {
             .bytes()?;
 
         let channel = Channel::read_from(&feed[..])?;
-        let Item { title, link, .. } = channel.items.first().unwrap();
+        let Item { title, link, .. } = channel.items.first().ok_or(anyhow!("no blog posts found"))?;
 
-        let title = title.clone().unwrap();
-        let url = link.clone().unwrap();
+        let title = title.clone().ok_or(anyhow!("no title"))?;
+        let url = link.clone().ok_or(anyhow!("no url"))?;
 
         debug!(self.log, "retrieved blog"; "title" => &title, "url" => &url);
 

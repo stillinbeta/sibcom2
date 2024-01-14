@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use rss::{Channel, Item};
 use scraper::Node;
 use serde::{Deserialize, Serialize};
@@ -39,7 +39,7 @@ impl<'a> crate::Updater for Mastodon<'a> {
         let channel = Channel::read_from(&feed[..])?;
         let Item {
             description, link, ..
-        } = channel.items.first().unwrap();
+        } = channel.items.first().ok_or(anyhow!("found no toots"))?;
 
         let message = description.clone().unwrap_or("this one".into());
 
@@ -52,7 +52,7 @@ impl<'a> crate::Updater for Mastodon<'a> {
             })
             .fold(String::new(), |m, v| m + v.deref());
 
-        let url = link.clone().unwrap();
+        let url = link.clone().ok_or(anyhow!("missing URL for toot??"))?;
 
         debug!(self.log, "retrieved toot"; "title" => &message, "url" => &url);
 
