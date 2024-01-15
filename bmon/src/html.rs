@@ -92,7 +92,7 @@ macro_rules! html_page {
 impl Value {
     pub(crate) fn to_html(&self) -> String {
         match self {
-            Value::String(s) => span!("string", "{}", htmlescape::encode_minimal(s)),
+            Value::String(s) => span!("string", "\"{}\"", htmlescape::encode_minimal(s)),
             Value::Link(link, display) => span!(
                 "link",
                 r#""<a href="{0}">{1}</a>""#,
