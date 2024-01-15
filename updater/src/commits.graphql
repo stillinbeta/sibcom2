@@ -1,4 +1,4 @@
-query GithubQuery {
+{
   viewer {
     commitComments(last: 1) {
       nodes {

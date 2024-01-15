@@ -36,10 +36,10 @@ fn main() {
     let root = slog::Logger::root(slog_term::FullFormat::new(plain).build().fuse(), o!());
 
     let updaters: Vec<Box<dyn Updater>> = vec![
-        // Box::new(updater::Blog::new(&root)),
+        Box::new(updater::Blog::new(&root)),
         Box::new(updater::Github::new(&root)),
-        // Box::new(updater::Mastodon::new(&root)),
-        // Box::new(updater::Cohost::new(&root)),
+        Box::new(updater::Mastodon::new(&root)),
+        Box::new(updater::Cohost::new(&root)),
     ];
 
     for mut updater in updaters {
