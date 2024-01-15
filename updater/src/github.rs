@@ -1,20 +1,42 @@
 use anyhow::{anyhow, Result};
-use reqwest::StatusCode;
+use graphql_client::GraphQLQuery;
 use serde::{Deserialize, Serialize};
-use slog::{debug, error};
 
 pub struct Github<'a> {
     log: &'a slog::Logger,
 }
 
 impl<'a> Github<'a> {
-    const PUBLIC_EVENTS_URL: &'static str =
-        "https://api.github.com/users/stillinbeta/events/public";
-    const EVENT_NAME: &'static str = "PushEvent";
+    // const PUBLIC_EVENTS_URL: &'static str =
+    //     "https://api.github.com/users/stillinbeta/events/public";
+    // const EVENT_NAME: &'static str = "PushEvent";
 
     pub fn new(log: &'a slog::Logger) -> Self {
         Self { log }
     }
+}
+
+#[allow(clippy::upper_case_acronyms)]
+type URI = String;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "./src/github-schema.graphql",
+    query_path = "./src/github-query.graphql"
+)]
+pub struct GithubQuery;
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Repository {
+    repository: String,
+    url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct Commit {
+    message: String,
+    url: String,
+    repository: Repository,
 }
 
 impl<'a> crate::Updater for Github<'a> {
@@ -31,69 +53,23 @@ impl<'a> crate::Updater for Github<'a> {
             ))
             .build()?;
 
-        let response = client
-            .get(Self::PUBLIC_EVENTS_URL)
-            .header("accept", "application/json")
-            .send()?;
+        let body = GithubQuery::build_query(github_query::Variables);
+        let resp: github_query::ResponseData = dbg!(client
+            .post("https://api.github.com/graphql")
+            .json(&body)
+            .send()?)
+            .json()?;
 
-        if response.status() != StatusCode::OK {
-            let code = response.status();
-            error!(self.log, "bad status"; "code" => ?code, "response" => ?response.bytes());
-            return Err(anyhow!("failed to github".to_string()));
-        }
+        let node = resp.viewer.commit_comments.nodes.and_then(|mut v| v.pop()).flatten().ok_or(anyhow!("no commits on github"))?;
 
-        let mut json: Vec<Event> = response.error_for_status()?.json()?;
+        let commit = node.commit.ok_or(anyhow!("no commits on github"))?;
 
-        json.reverse();
+        let commit = Commit {
+            message: commit.message,
+            url: commit.url,
+            repository: Repository { repository: node.repository.name_with_owner, url: node.repository.url }
+        };
 
-        let mut responses: Vec<Event> = json
-            .into_iter()
-            .filter(|e| e.event_type == Self::EVENT_NAME)
-            .collect();
-
-        let mut event = responses.pop().ok_or(anyhow!("No events found"))?;
-        let commit = event
-            .payload
-            .commits
-            .pop()
-            .ok_or(anyhow!("No commits found"))?;
-
-        debug!(self.log, "got event"; "event" => ?event, "commit" => ?commit);
-        Ok(serde_json::to_string(&Node {
-            commit,
-            repository: event.repo,
-        })?)
+        Ok(serde_json::to_string(&commit)?)
     }
-}
-
-#[derive(Debug, Deserialize)]
-struct Event {
-    #[serde(rename = "type")]
-    event_type: String,
-    repo: Repository,
-    payload: Payload,
-}
-
-#[derive(Debug, Deserialize)]
-struct Payload {
-    #[serde(default)]
-    commits: Vec<Commit>,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Node {
-    pub commit: Commit,
-    pub repository: Repository,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Commit {
-    pub message: String,
-    pub url: String,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Repository {
-    pub url: String,
-    pub name: String,
 }

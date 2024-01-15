@@ -1,6 +1,6 @@
 use crate::blog::Post;
 use crate::cohost::Chost;
-use crate::github::Node;
+use crate::github::Commit;
 use crate::mastodon::Status;
 use anyhow::Result;
 use redis::Commands;
@@ -33,7 +33,7 @@ impl Client {
         self.get("mastodon")
     }
 
-    pub fn get_commit(&self) -> Result<Node> {
+    pub fn get_commit(&self) -> Result<Commit> {
         self.get("github")
     }
 
