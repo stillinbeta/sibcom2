@@ -1,7 +1,6 @@
 use anyhow::{anyhow, Result};
-use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
-use slog::{debug, error};
+use slog::debug;
 
 pub struct Github<'a> {
     log: &'a slog::Logger,
@@ -17,12 +16,8 @@ impl<'a> Github<'a> {
     }
 }
 
-impl<'a> crate::Updater for Github<'a> {
-    fn name(&self) -> &'static str {
-        "github"
-    }
-
-    fn new_value(&mut self) -> Result<String> {
+impl Github<'_> {
+    fn github_latest(&self) -> Result<Node> {
         let client = reqwest::blocking::Client::builder()
             .user_agent(concat!(
                 env!("CARGO_PKG_NAME"),
@@ -31,38 +26,43 @@ impl<'a> crate::Updater for Github<'a> {
             ))
             .build()?;
 
-        let response = client
+        let events: Vec<Event> = client
             .get(Self::PUBLIC_EVENTS_URL)
             .header("accept", "application/json")
-            .send()?;
+            .send()?
+            .error_for_status()?
+            .json()?;
 
-        if response.status() != StatusCode::OK {
-            let code = response.status();
-            error!(self.log, "bad status"; "code" => ?code, "response" => ?response.bytes());
-            return Err(anyhow!("failed to github".to_string()));
-        }
-
-        let mut json: Vec<Event> = response.error_for_status()?.json()?;
-
-        json.reverse();
-
-        let mut responses: Vec<Event> = json
+        let Event { repo, payload, .. } = events
             .into_iter()
-            .filter(|e| e.event_type == Self::EVENT_NAME)
-            .collect();
+            .rev()
+            .find(|e| e.event_type == Self::EVENT_NAME)
+            .ok_or(anyhow!("somehow no events found on github"))?;
 
-        let mut event = responses.pop().ok_or(anyhow!("No events found"))?;
-        let commit = event
-            .payload
+        let commit = payload
             .commits
-            .pop()
+            .into_iter()
+            .next()
             .ok_or(anyhow!("No commits found"))?;
 
-        debug!(self.log, "got event"; "event" => ?event, "commit" => ?commit);
-        Ok(serde_json::to_string(&Node {
+        debug!(self.log, "got push event"; "repo" => ?repo, "commit" => ?commit);
+
+        Ok(Node {
             commit,
-            repository: event.repo,
-        })?)
+            repository: repo,
+        })
+    }
+}
+
+impl<'a> crate::Updater for Github<'a> {
+    fn name(&self) -> &'static str {
+        "github"
+    }
+
+    fn new_value(&mut self) -> Result<String> {
+        let node = self.github_latest()?;
+
+        Ok(serde_json::to_string(&node)?)
     }
 }
 
