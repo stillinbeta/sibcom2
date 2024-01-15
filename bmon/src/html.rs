@@ -12,14 +12,18 @@ pub(crate) enum Theme {
     Terminal,
 }
 
+const SOLARIZED_DARK: &str = "solarized-dark";
+const SOLARIZED_LIGHT: &str = "solarized-light";
+const TERMINAL: &str = "terminal";
+
 impl FromStr for Theme {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "solarized-dark" => Ok(Theme::SolarizedDark),
-            "solarized-light" => Ok(Theme::SolarizedLight),
-            "terminal" => Ok(Theme::Terminal),
+            SOLARIZED_DARK => Ok(Theme::SolarizedDark),
+            SOLARIZED_LIGHT => Ok(Theme::SolarizedLight),
+            TERMINAL => Ok(Theme::Terminal),
             theme => Err(format!("unknown theme {:?}", theme)),
         }
     }
@@ -28,9 +32,9 @@ impl FromStr for Theme {
 impl Display for Theme {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Theme::SolarizedDark => write!(f, "solarized-dark"),
-            Theme::SolarizedLight => write!(f, "solarized-light"),
-            Theme::Terminal => write!(f, "terminal"),
+            Theme::SolarizedDark => write!(f, "{}", SOLARIZED_DARK),
+            Theme::SolarizedLight => write!(f, "{}", SOLARIZED_LIGHT),
+            Theme::Terminal => write!(f, "{}", TERMINAL),
         }
     }
 }
