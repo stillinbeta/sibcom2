@@ -1,9 +1,16 @@
+use std::time::Duration;
+
 use anyhow::{anyhow, Result};
+use reqwest::{
+    blocking::Client,
+    header::{HeaderName, HeaderValue, ACCEPT},
+};
 use serde::{Deserialize, Serialize};
 use slog::{debug, warn};
 
 pub struct Cohost<'a> {
     log: &'a slog::Logger,
+    client: Client,
 }
 
 #[derive(Deserialize)]
@@ -27,8 +34,30 @@ impl<'a> Cohost<'a> {
     const USER_PAGE_JSON: &'static str = "https://cohost.org/stillinbeta/rss/public.json";
     const AUTHOR_NAME: &'static str = "@stillinbeta";
 
+    const USER_AGENT: &'static str =
+        concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
+    const TIMEOUT: Duration = Duration::from_secs(5);
+
     pub fn new(log: &'a slog::Logger) -> Self {
-        Self { log }
+        let headers = [
+            (ACCEPT, HeaderValue::from_static("application/json")),
+            (
+                HeaderName::from_static("fastly-debug"),
+                HeaderValue::from_static("1"),
+            ),
+        ]
+        .into_iter()
+        .collect();
+
+        Self {
+            log,
+            client: Client::builder()
+                .user_agent(Self::USER_AGENT)
+                .timeout(Self::TIMEOUT)
+                .default_headers(headers)
+                .build()
+                .expect("invalid config"),
+        }
     }
 }
 
@@ -40,9 +69,7 @@ pub struct Chost {
 
 impl Cohost<'_> {
     fn get_page(&mut self) -> Result<Page> {
-        let client = reqwest::blocking::Client::new();
-
-        let resp = client.get(Self::USER_PAGE_JSON).send()?;
+        let resp = self.client.get(Self::USER_PAGE_JSON).send()?;
 
         if resp.status().is_success() {
             Ok(resp.json()?)
