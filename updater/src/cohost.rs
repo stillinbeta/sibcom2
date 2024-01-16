@@ -1,6 +1,6 @@
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
-use slog::debug;
+use slog::{debug, warn};
 
 pub struct Cohost<'a> {
     log: &'a slog::Logger,
@@ -41,11 +41,19 @@ pub struct Chost {
 impl Cohost<'_> {
     fn get_page(&mut self) -> Result<Page> {
         let client = reqwest::blocking::Client::new();
-        Ok(client
-            .get(Self::USER_PAGE_JSON)
-            .send()?
-            .error_for_status()?
-            .json()?)
+
+        let resp = client.get(Self::USER_PAGE_JSON).send()?;
+
+        if resp.status().is_success() {
+            Ok(resp.json()?)
+        } else {
+            let code = resp.status();
+            let headers = format!("{:?}", resp.headers());
+            let body = resp.text()?;
+
+            warn!(self.log, "failed to get result"; "code" => code.as_str(), "body" => body, "headers" => headers);
+            Err(anyhow!("couldn't update Cohost"))
+        }
     }
 }
 
