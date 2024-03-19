@@ -20,7 +20,7 @@ pages:
       mastodon: "gayhorse.club/@beta"
       github: "github.com/stillinbeta"
       sourcehut: "git.sr.ht/~liz"
-      linkedin: "linkedin.com/in/stillinbeta"
+      # linkedin: "linkedin.com/in/stillinbeta"
     messaging:
       email: "liz @ [ siβ ] dot com"
       telegram: 'telegram.me/stillinbeta'
@@ -161,4 +161,4 @@ pages:
     - conduit
     code: "github.com/stillinbeta/pleasecaption"
     site: "twitter.com/pleasecaption"
-  '/resume': 'https://static.stillinbeta.com/lizfrost-resume.pdf'
+  # '/resume': 'https://static.stillinbeta.com/lizfrost-resume.pdf'
