@@ -1,5 +1,4 @@
 use crate::blog::Post;
-use crate::cohost::Chost;
 use crate::github::Node;
 use crate::mastodon::Status;
 use anyhow::Result;
@@ -35,10 +34,6 @@ impl Client {
 
     pub fn get_commit(&self) -> Result<Node> {
         self.get("github")
-    }
-
-    pub fn get_chost(&self) -> Result<Chost> {
-        self.get("cohost")
     }
 
     pub fn get_blog(&self) -> Result<Post> {

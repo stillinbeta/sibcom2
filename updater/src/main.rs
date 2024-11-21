@@ -39,7 +39,6 @@ fn main() {
         Box::new(updater::Blog::new(&root)),
         Box::new(updater::Github::new(&root)),
         Box::new(updater::Mastodon::new(&root)),
-        Box::new(updater::Cohost::new(&root)),
     ];
 
     for mut updater in updaters {

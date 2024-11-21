@@ -93,14 +93,6 @@ impl BMONHandler {
             }
         };
 
-        let chost = match client.get_chost() {
-            Ok(chost) => Value::Link(chost.url, chost.title),
-            // TODO: slog
-            Err(err) => {
-                eprintln!("Cohost error: {:?}", err);
-                Value::String("unknown".into())
-            }
-        };
         let github = match client.get_commit() {
             Ok(commit) => Value::Object(vec![
                 (
@@ -121,7 +113,6 @@ impl BMONHandler {
         Value::Object(vec![
             (Value::String("blog-post".into()), blog),
             (Value::String("toot".into()), mastodon),
-            (Value::String("chost".into()), chost),
             (Value::String("push".into()), github),
         ])
     }

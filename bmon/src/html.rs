@@ -140,8 +140,7 @@ impl Value {
         let mut iter = rows.iter().peekable();
         let mut buf = String::new();
         // Can't use a for loop because that'd take ownership of the iter
-        while iter.peek().is_some() {
-            let val = iter.next().unwrap();
+        while let Some(val) = iter.next() {
             let mut row = f(val);
             if iter.peek().is_some() {
                 row.push(',')
