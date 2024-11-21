@@ -28,7 +28,7 @@ pages:
   - name: "Keyboarding Ain’t Easy?? What Not To Do When Building a Keyboard!!"
     conference: "!!Con 2024"
     recording: "https://www.youtube.com/watch?v=TMFYchj_YXY"
-    slides: "https://docs.google.com/presentation/d/e/2PACX-1vTsOUfHrzYU49TFEURN-MVJpdjfOqKSLmv4hQrfOES8_uAUKoAUvUKNejXKLtDExxHyKJtDnJnFcKlc/pub"
+    slides: "static.stillinbeta.com/slides/keyboarding-aint-easy-how-not-to-build-a-keyboard.pdf"
   - name: "EZ-Rust: Z80 for the web"
     conference: "Brooklyn JS July 2019"
     recording: null
