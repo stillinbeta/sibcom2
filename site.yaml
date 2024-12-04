@@ -7,7 +7,7 @@ pages:
       - ponies
       - girls
     '*': "not accredited by Engineers Canada"
-    hire_me: false
+    hire_me: true
   '/contact':
     name: "Liz Frost"
     also_known_as:
@@ -19,16 +19,15 @@ pages:
       mastodon: "gayhorse.club/@beta"
       github: "github.com/stillinbeta"
       sourcehut: "git.sr.ht/~liz"
-      # linkedin: "linkedin.com/in/stillinbeta"
     messaging:
       email: "liz @ [ siβ ] dot com"
-      telegram: 'telegram.me/stillinbeta'
       discord: "@stillinbeta"
   '/talks':
   - name: "Keyboarding Ain’t Easy?? What Not To Do When Building a Keyboard!!"
     conference: "!!Con 2024"
-    recording: "https://www.youtube.com/watch?v=TMFYchj_YXY"
+    recording: "www.youtube.com/watch?v=TMFYchj_YXY"
     slides: "static.stillinbeta.com/slides/keyboarding-aint-easy-how-not-to-build-a-keyboard.pdf"
+    repository: null
   - name: "EZ-Rust: Z80 for the web"
     conference: "Brooklyn JS July 2019"
     recording: null
@@ -70,6 +69,21 @@ pages:
     recording: "youtube.com/watch?v=kImZqJfOLyQ"
     repository: null
   '/projects':
+  - name: "yuri.guide"
+    description: "A Django site I built for my wife that catalogues English-language sapphic manga"
+    technologies:
+    - "django"
+    - "css"
+    - "postgres"
+    code: 'git.sr.ht/~liz/yuri.guide'
+    site: 'yuri.guide'
+  - name: 'actix-ws-proxy'
+    description: "A small actix helper for proxying websockets, a la actix-proxy"
+    technologies:
+    - "rust"
+    - "actix"
+    code: https://git.sr.ht/~liz/actix-ws-proxy
+    site: 'crates.io/crates/actix-ws-proxy'
   - name: "den-tv"
     description: "A display of useful information that runs in our kitchen"
     technologies:
@@ -78,7 +92,7 @@ pages:
     - "yew"
     - "websockets"
     code: "git.sr.ht/~liz/den-tv"
-    site: "https://blog.stillinbeta.com/2024-01-01-overengineered-household-display.html"
+    site: "blog.stillinbeta.com/2024-01-01-overengineered-household-display.html"
   - name: "beats"
     description: "A custom watchface for my Garmin Vivoactive 3"
     technologies:
@@ -121,7 +135,7 @@ pages:
     code: "github.com/stillinbeta/sibcom2"
     site: "stillinbeta.com"
   - name: leckie
-    description: "my budget Kubernetes cluster, hosts this site and my mastodon instance"
+    description: "my budget Kubernetes cluster, hosted this site and my mastodon instance"
     technologies:
     - kubernetes
     - "weaveworks flux"
@@ -164,4 +178,3 @@ pages:
     - conduit
     code: "github.com/stillinbeta/pleasecaption"
     site: "twitter.com/pleasecaption"
-  # '/resume': 'https://static.stillinbeta.com/lizfrost-resume.pdf'
