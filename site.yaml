@@ -16,13 +16,17 @@ pages:
       - Izzy
       - Elizabeth
     social:
-      mastodon: "gayhorse.club/@beta"
       github: "github.com/stillinbeta"
       sourcehut: "git.sr.ht/~liz"
     messaging:
       email: "liz @ [ siβ ] dot com"
       discord: "@stillinbeta"
   '/talks':
+  - name: "Service Messy: Pagerduty's Service Mesh Migration"
+    conference: "SRECon EMEA 2025"
+    recording: "https://www.youtube.com/watch?v=vPcbT9hSUJU"
+    slides: "https://www.usenix.org/system/files/srecon25emea_slides-frost.pdf"
+    repository: null
   - name: "Keyboarding Ain’t Easy?? What Not To Do When Building a Keyboard!!"
     conference: "!!Con 2024"
     recording: "www.youtube.com/watch?v=TMFYchj_YXY"
@@ -135,7 +139,7 @@ pages:
     code: "github.com/stillinbeta/sibcom2"
     site: "stillinbeta.com"
   - name: leckie
-    description: "my budget Kubernetes cluster, hosted this site and my mastodon instance"
+    description: "my budget Kubernetes cluster, formerly hosted this site and my mastodon instance"
     technologies:
     - kubernetes
     - "weaveworks flux"
