@@ -1,11 +1,13 @@
 use anyhow::{anyhow, Result};
-use serde::{Deserialize, Serialize};
+use reqwest::blocking::Client;
+use serde::Deserialize;
 use slog::debug;
 
-use crate::reqwest_client;
+use crate::{reqwest_client, Commit, Push, Repository};
 
 pub struct Github<'a> {
     log: &'a slog::Logger,
+    client: Client,
 }
 
 impl<'a> Github<'a> {
@@ -13,13 +15,16 @@ impl<'a> Github<'a> {
         "https://api.github.com/users/stillinbeta/events/public";
     const EVENT_NAME: &'static str = "PushEvent";
 
-    pub fn new(log: &'a slog::Logger) -> Self {
-        Self { log }
+    pub fn new(log: &'a slog::Logger) -> Result<Self> {
+        Ok(Self {
+            log,
+            client: Client::builder().user_agent(super::USER_AGENT).build()?,
+        })
     }
 }
 
 impl Github<'_> {
-    fn github_latest(&self) -> Result<Node> {
+    fn github_latest(&self) -> Result<Event> {
         let client = reqwest_client()?;
 
         let events: Vec<Event> = client
@@ -29,23 +34,22 @@ impl Github<'_> {
             .error_for_status()?
             .json()?;
 
-        let Event { repo, payload, .. } = events
+        events
             .into_iter()
             .rev()
             .find(|e| e.event_type == Self::EVENT_NAME)
-            .ok_or(anyhow!("somehow no events found on github"))?;
+            .ok_or(anyhow!("somehow no events found on github"))
+    }
 
-        let commit = payload
-            .commits
-            .into_iter()
-            .next()
-            .ok_or(anyhow!("No commits found"))?;
+    fn get_push(&self) -> Result<Push> {
+        let event = self.github_latest()?;
 
-        debug!(self.log, "got push event"; "repo" => ?repo, "commit" => ?commit);
+        debug!(self.log, "retrieving commit message"; "commit" => &event.payload.head);
 
-        Ok(Node {
-            commit,
-            repository: repo,
+        let commit: GHCommit = self.client.get(event.url_for_commit()).send()?.json()?;
+        Ok(Push {
+            repository: event.repo,
+            commit: commit.commit,
         })
     }
 }
@@ -56,9 +60,9 @@ impl<'a> crate::Updater for Github<'a> {
     }
 
     fn new_value(&mut self) -> Result<String> {
-        let node = self.github_latest()?;
+        let push = self.get_push()?;
 
-        Ok(serde_json::to_string(&node)?)
+        Ok(serde_json::to_string(&push)?)
     }
 }
 
@@ -70,26 +74,19 @@ struct Event {
     payload: Payload,
 }
 
+impl Event {
+    fn url_for_commit(&self) -> String {
+        format!("{}/commits/{}", self.repo.url, self.payload.head)
+    }
+}
+
 #[derive(Debug, Deserialize)]
 struct Payload {
     #[serde(default)]
-    commits: Vec<Commit>,
+    head: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Node {
-    pub commit: Commit,
-    pub repository: Repository,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Commit {
-    pub message: String,
-    pub url: String,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Repository {
-    pub url: String,
-    pub name: String,
+#[derive(Debug, Deserialize)]
+struct GHCommit {
+    commit: Commit,
 }

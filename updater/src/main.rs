@@ -39,7 +39,7 @@ fn main() {
 
     let updaters: Vec<Box<dyn Updater>> = vec![
         Box::new(updater::Blog::new(&root)),
-        Box::new(updater::Github::new(&root)),
+        Box::new(updater::Github::new(&root).expect("failed to create github client")),
         Box::new(
             updater::Sourcehut::new(&cfg.sourcehut_token)
                 .expect("failed to create sourcehut client"),

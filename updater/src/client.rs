@@ -1,6 +1,5 @@
 use crate::blog::Post;
-use crate::github::Node;
-use crate::sourcehut::Push;
+use crate::Push;
 use anyhow::Result;
 use redis::Commands;
 
@@ -32,7 +31,7 @@ impl Client {
         self.get("sourcehut")
     }
 
-    pub fn get_commit(&self) -> Result<Node> {
+    pub fn get_commit(&self) -> Result<Push> {
         self.get("github")
     }
 

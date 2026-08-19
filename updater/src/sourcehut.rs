@@ -4,11 +4,12 @@ use reqwest::{
     blocking::Client as ReqwestClient,
     header::{HeaderMap, HeaderValue, AUTHORIZATION},
 };
-use serde::{Deserialize, Serialize};
 use sourcehut_query::{
     SourcehutQueryMeRepositoriesResults as SourcehutRepository,
     SourcehutQueryMeRepositoriesResultsLogResults as SourcehutCommit,
 };
+
+use super::{Commit, Push, Repository};
 
 type Time = String;
 
@@ -44,11 +45,11 @@ impl Sourcehut {
 
     pub fn get_query(&self) -> Result<sourcehut_query::ResponseData> {
         let body = SourcehutQuery::build_query(sourcehut_query::Variables);
-        match dbg!(self
+        match self
             .client
             .post(Self::GRAPHQL_URL)
             .json(&body)
-            .send()?)
+            .send()?
             .json()?
         {
             Response {
@@ -98,10 +99,10 @@ impl TryFrom<sourcehut_query::ResponseData> for Push {
         Ok(Push {
             commit: Commit {
                 message: message.to_string(),
-                url: commit_url(&username, &repo_name, id),
+                url: commit_url(&username, repo_name, id),
             },
             repository: Repository {
-                url: repo_url(&username, &repo_name),
+                url: repo_url(&username, repo_name),
                 name: repo_name.to_string(),
             },
         })
@@ -110,7 +111,7 @@ impl TryFrom<sourcehut_query::ResponseData> for Push {
 
 impl crate::Updater for Sourcehut {
     fn name(&self) -> &'static str {
-        "github"
+        "sourcehut"
     }
 
     fn new_value(&mut self) -> Result<String> {
@@ -119,22 +120,3 @@ impl crate::Updater for Sourcehut {
         Ok(serde_json::to_string(&node)?)
     }
 }
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Push {
-    pub commit: Commit,
-    pub repository: Repository,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Commit {
-    pub message: String,
-    pub url: String,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Repository {
-    pub url: String,
-    pub name: String,
-}
-
