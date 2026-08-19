@@ -2,6 +2,8 @@ use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
 use slog::debug;
 
+use crate::reqwest_client;
+
 pub struct Github<'a> {
     log: &'a slog::Logger,
 }
@@ -18,13 +20,7 @@ impl<'a> Github<'a> {
 
 impl Github<'_> {
     fn github_latest(&self) -> Result<Node> {
-        let client = reqwest::blocking::Client::builder()
-            .user_agent(concat!(
-                env!("CARGO_PKG_NAME"),
-                "/",
-                env!("CARGO_PKG_VERSION")
-            ))
-            .build()?;
+        let client = reqwest_client()?;
 
         let events: Vec<Event> = client
             .get(Self::PUBLIC_EVENTS_URL)

@@ -1,6 +1,6 @@
 use crate::blog::Post;
 use crate::github::Node;
-use crate::mastodon::Status;
+use crate::sourcehut::Push;
 use anyhow::Result;
 use redis::Commands;
 
@@ -28,8 +28,8 @@ impl Client {
         Ok(status.clone())
     }
 
-    pub fn get_mastodon(&self) -> Result<Status> {
-        self.get("mastodon")
+    pub fn get_sourcehut(&self) -> Result<Push> {
+        self.get("sourcehut")
     }
 
     pub fn get_commit(&self) -> Result<Node> {

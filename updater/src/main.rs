@@ -24,6 +24,8 @@ struct Config {
 
     #[serde(default = "default_namespace")]
     redis_namespace: String,
+
+    sourcehut_token: String,
 }
 
 fn main() {
@@ -38,7 +40,10 @@ fn main() {
     let updaters: Vec<Box<dyn Updater>> = vec![
         Box::new(updater::Blog::new(&root)),
         Box::new(updater::Github::new(&root)),
-        Box::new(updater::Mastodon::new(&root)),
+        Box::new(
+            updater::Sourcehut::new(&cfg.sourcehut_token)
+                .expect("failed to create sourcehut client"),
+        ),
     ];
 
     for mut updater in updaters {

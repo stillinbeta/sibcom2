@@ -108,6 +108,18 @@ impl TryFrom<sourcehut_query::ResponseData> for Push {
     }
 }
 
+impl crate::Updater for Sourcehut {
+    fn name(&self) -> &'static str {
+        "github"
+    }
+
+    fn new_value(&mut self) -> Result<String> {
+        let node = self.get_push()?;
+
+        Ok(serde_json::to_string(&node)?)
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Push {
     pub commit: Commit,
@@ -125,3 +137,4 @@ pub struct Repository {
     pub url: String,
     pub name: String,
 }
+
