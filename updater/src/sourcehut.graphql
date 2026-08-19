@@ -1,0 +1,19 @@
+# https://git.sr.ht/~sircmpwn/git.sr.ht/tree/master/item/api/graph/schema.graphqls
+
+query SourcehutQuery {
+  me {
+    canonicalName
+    repositories(filter: { count: 1 }) {
+      results {
+        name, 
+        updated
+        log {
+          results {
+            id
+            message
+          }
+        }
+      }
+    }
+  }
+}
