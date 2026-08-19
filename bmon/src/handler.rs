@@ -8,6 +8,7 @@ use rocket::serde::json::Json;
 use rocket::{Data, Request};
 use std::io::Cursor;
 use std::str::FromStr;
+use updater::Push;
 
 use crate::html;
 use crate::Value;
@@ -77,45 +78,43 @@ impl BMONHandler {
     }
 
     fn get_latest(&self, client: &updater::Client) -> Value {
-        let mastodon = match client.get_mastodon() {
-            Ok(status) => Value::Link(status.url, status.message),
-            // TODO: slog
-            Err(err) => {
-                eprintln!("Mastodon error: {:?}", err);
+        let blog = client
+            .get_blog()
+            .map(|post| Value::Link(post.url, post.title))
+            .unwrap_or_else(|e| {
+                eprintln!("Blog error: {:?}", e);
                 Value::String("unknown".into())
-            }
-        };
-        let blog = match client.get_blog() {
-            Ok(post) => Value::Link(post.url, post.title),
-            Err(err) => {
-                eprintln!("Blog error: {:?}", err);
-                Value::String("unknown".into())
-            }
-        };
+            });
 
-        let github = match client.get_commit() {
-            Ok(commit) => Value::Object(vec![
-                (
-                    Value::String("commit".into()),
-                    Value::Link(commit.commit.url, commit.commit.message),
-                ),
-                (
-                    Value::String("repository".into()),
-                    Value::Link(commit.repository.url, commit.repository.name),
-                ),
-            ]),
-            Err(err) => {
-                eprintln!("Github error: {:?}", err);
-                Value::String("unknown".into())
-            }
-        };
+        let github = client.get_commit().map(push_to_val).unwrap_or_else(|e| {
+            eprintln!("Github error: {:?}", e);
+            Value::String("unknown".into())
+        });
+
+        let sourcehut = client.get_sourcehut().map(push_to_val).unwrap_or_else(|e| {
+            eprintln!("Sourcehut error: {:?}", e);
+            Value::String("unknown".into())
+        });
 
         Value::Object(vec![
             (Value::String("blog-post".into()), blog),
-            (Value::String("toot".into()), mastodon),
-            (Value::String("push".into()), github),
+            (Value::String("github_push".into()), github),
+            (Value::String("sourcehut_push".into()), sourcehut),
         ])
     }
+}
+
+fn push_to_val(push: Push) -> Value {
+    Value::Object(vec![
+        (
+            Value::String("commit".into()),
+            Value::Link(push.commit.url, push.commit.message),
+        ),
+        (
+            Value::String("repository".into()),
+            Value::Link(push.repository.url, push.repository.name),
+        ),
+    ])
 }
 
 #[rocket::async_trait]
