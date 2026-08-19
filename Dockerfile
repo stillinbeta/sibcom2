@@ -1,4 +1,4 @@
-FROM rust:1.75-alpine3.19 as builder
+FROM rust:1.97-alpine3.24 AS builder
 RUN mkdir /build
 RUN apk add pkgconfig openssl openssl-dev musl-dev
 COPY assets /build/assets
@@ -13,7 +13,7 @@ COPY Cargo.toml Cargo.lock /build/
 WORKDIR /build
 RUN cargo build --release
 
-FROM alpine:3.19
+FROM alpine:3.24
 RUN apk add openssl libgcc
 
 COPY --from=builder /build/target/release/sibcom2 /
