@@ -9,12 +9,12 @@ document.addEventListener("DOMContentLoaded", function() {
         let div = document.createElement('div');
         div.className = theme + " theme-preview";
         div.role = "button";
-        div.onmouseenter =  function() {
+        div.onmouseenter = function() {
             document.body.className = theme;
         };
         div.onclick = function() {
             currentTheme = theme;
-            document.cookie = "theme="+theme;
+            document.cookie = "theme=" + theme;
         };
 
         div.appendChild(document.createTextNode("{"));
