@@ -4,10 +4,40 @@ body {
     font-size: 18pt;
 }
 
+.solarized-dark {
+    background-color: #002b36;
+    color: #657b83;
+    text-shadow: 0 0 0;
+
+    --string: #859900;
+    --key: #268bd2;
+    --visited: #6c71c4;
+    --bool: #2aa198;
+
+}
+
+.solarized-light {
+    background-color: #fdf6e3;
+    color: #839496;
+    text-shadow: 0 0 0;
+
+    --key: #268bd2;
+    --string: #859900;
+    --visited: #6c71c4;
+    --boolean: #d33682;
+}
+
+/* hacker mode */
+.terminal {
+    background-color: black;
+    color: #00FF00;
+    text-shadow: 0 0 5px #00FF00;
+}
+
 .theme-preview {
-  margin: 0.25em;
-  padding: 1em;
-  float: right;
+    margin: 0.25em;
+    padding: 1em;
+    float: right;
 }
 
 .theme-previews {
@@ -15,89 +45,34 @@ body {
     right: 0;
 }
 
-div.brace-inner, div.bracket-inner {
+div.brace-inner,
+div.bracket-inner {
     margin-left: 1em;
 }
 
-/* dark theme */
-.solarized-dark {
-    background-color: #002b36;
-    color: #657b83;
-    text-shadow: 0 0 0;
-}
-
-.solarized-dark span.brace-open, .solarized-dark span.brace-close, .solarized-dark span.bracket-open, .solarized-dark span.bracket-close {
+span.brace-open,
+span.brace-close,
+span.bracket-open,
+span.bracket-close {
     font-weight: bold;
 }
 
-.solarized-dark span.key span.string {
-    color: #268bd2;
+span.key span.string {
+    color: var(--key);
     font-weight: bold;
 }
 
-.solarized-dark span.string {
-    color: #859900;
+span.string,
+span.link a {
+    color: var(--string);
 }
 
-.solarized-dark span.link a {
-    color: #859900;
+span.link a:visited {
+    color: var(--visited);
 }
 
-.solarized-dark span.link a:visited {
-    color: #6c71c4;
-}
-
-.solarized-dark span.boolean, .solarized-dark span.null {
-    color: #2aa198;
+span.boolean,
+span.null {
+    color: var(--boolean);
     font-weight: bold;
-}
-
-/* light theme */
-.solarized-light {
-    background-color: #fdf6e3;
-    color: #839496;
-    text-shadow: 0 0 0;
-}
-
-.solarized-light span.brace-open, .solarized-light span.brace-close, .solarized-light span.bracket-open, .solarized-light span.bracket-close {
-    font-weight: bold;
-}
-
-.solarized-light span.key span.string {
-    color: #268bd2;
-    font-weight: bold;
-}
-
-.solarized-light span.string {
-    color: #859900;
-}
-
-.solarized-light span.link a {
-    color: #859900;
-}
-
-.solarized-light span.link a:visited {
-    color: #6c71c4;
-}
-
-.solarized-light span.boolean, .solarized-light span.null {
-    color: #d33682;
-    font-weight: bold;
-}
-
-/* terminal */
-.terminal {
-    background-color: black;
-    color: #00FF00;
-    text-shadow: 0 0 5px #00FF00;
-}
-
-.terminal span.link a {
-    color: #00FF00;
-    text-shadow: 0 0 5px #00FF00;
-}
-
-.terminal span.link a:visited {
-    color: #00FF00;
-    text-shadow: 0 0 5px #00FF00;
 }
