@@ -9,8 +9,8 @@ pub use github::Github;
 pub use sourcehut::Sourcehut;
 
 use anyhow::{Error, Result};
-use serde::{Deserialize, Serialize};
 use reqwest::blocking::Client as ReqwestClient;
+use serde::{Deserialize, Serialize};
 
 pub trait Updater {
     fn name(&self) -> &'static str;
@@ -18,8 +18,7 @@ pub trait Updater {
     fn new_value(&mut self) -> Result<String>;
 }
 
-pub const USER_AGENT: &str =
-    concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
+pub const USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
 
 pub fn reqwest_client() -> Result<ReqwestClient> {
     ReqwestClient::builder()
