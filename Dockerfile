@@ -11,11 +11,16 @@ COPY site.yaml /build/
 COPY .cargo /build/.cargo
 COPY Cargo.toml Cargo.lock /build/
 WORKDIR /build
-RUN cargo build --release
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/build/target \
+    cargo build --release && \
+    cp /build/target/release/updater / && \
+    cp /build/target/release/sibcom2 /
+
 
 FROM alpine:3.24
 RUN apk add openssl libgcc
 
-COPY --from=builder /build/target/release/sibcom2 /
-COPY --from=builder /build/target/release/updater /
+COPY --from=builder /sibcom2 /
+COPY --from=builder /updater /
 CMD ["/sibcom2"]
