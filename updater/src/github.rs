@@ -36,7 +36,6 @@ impl Github<'_> {
 
         events
             .into_iter()
-            .rev()
             .find(|e| e.event_type == Self::EVENT_NAME)
             .ok_or(anyhow!("somehow no events found on github"))
     }
